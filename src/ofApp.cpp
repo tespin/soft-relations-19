@@ -1,105 +1,36 @@
 #include "ofApp.h"
 
 void ofApp::setup(){
-    cam.setDeviceID(0);
-    cam.setup(ofGetWidth(), ofGetHeight());
-    setupGui();
+    ofSetBackgroundColor(255);
     
-    contourFinder.getTracker().setPersistence(10);
-    contourFinder.getTracker().setMaximumDistance(40);
-    
-    prevTime = ofGetElapsedTimef();
+    currentClipperType = ClipperLib::ctIntersection;
 }
 
 void ofApp::update(){
     currentTime = ofGetElapsedTimef();
     
-    cam.update();
+    updateClipper();
     
-    if (cam.isFrameNew())
-    {
-        thresholdInput();
-        
-        contourFinder.setMinAreaRadius(contourMinArea);
-        contourFinder.setMaxAreaRadius(contourMaxArea);
-        contourFinder.setFindHoles(findHoles);
-        contourFinder.setInvert(invert);
-        contourFinder.findContours(thresh);
-        
-        shape = contourFinder.getPolyline(0);
-        shape2 = contourFinder.getPolyline(1);
+    if (clips.size() != 0)
+    {   
+        // record
+        // when/how to end recording?
     }
-    
-    if (bIsRecording)
-    {
-        recordings.insert(std::make_pair(currentTime, shape));
-    }
-    
-    timeBetweenReplays = ofGetElapsedTimef() - prevTime;
 }
 
 void ofApp::draw(){
     ofSetBackgroundColor(255);
-    
     ofSetColor(255);
-    thresh.draw(0, 0);
     
-    ofPushStyle();
-    ofSetColor(210, 168, 210);
-//    contourFinder.draw();
-    shape.draw();
-    ofPopStyle();
-    gui.draw();
-    
-    if (bWasRecorded)
-    {
-        replay();
-    }
+    drawSubjects();
+    drawMasks();
+    drawClips();
 }
 
 void ofApp::mousePressed(int x, int y, int button){
-    startRecordingTime = ofGetElapsedTimef();
-    prevTime = ofGetElapsedTimef();
-    bIsRecording = true;
-    bWasRecorded = false;
 }
 
 void ofApp::mouseReleased(int x, int y, int button){
-    endTime = ofGetElapsedTimef();
-    recordingLength = endTime - startRecordingTime;
-    bIsRecording = false;
-    bWasRecorded = true;
-    calculateReplayStart();
-}
-
-void ofApp::calculateReplayStart(){
-    startReplayTime = currentTime;
-}
-
-void ofApp::replay() {
-    if (replayTime >= startRecordingTime + recordingLength)
-    {
-        startReplayTime = currentTime;
-    }
-    
-    replayTime = currentTime - startReplayTime + startRecordingTime;
-    
-    std::map<float, ofPolyline>::iterator lowBound;
-    lowBound = recordings.lower_bound(replayTime);
-    
-    if (lowBound != recordings.end())
-    {
-        recording = lowBound->second;
-    }
-    
-    ofSetColor(210, 168, 210);
-    
-    ofBeginShape();
-    for (std::size_t i = 0; i < recording.size(); i++)
-    {
-        ofVertex(recording[i]);
-    }
-    ofEndShape();
 }
 
 void ofApp::setupGui(){
@@ -122,4 +53,60 @@ void ofApp::thresholdInput(){
     ofxCv::dilate(thresh, thresh, dilateIterations);
     
     thresh.update();
+}
+
+void ofApp::findContours(){
+    contourFinder.setMinAreaRadius(contourMinArea);
+    contourFinder.setMaxAreaRadius(contourMaxArea);
+    contourFinder.setFindHoles(findHoles);
+    contourFinder.setInvert(invert);
+    contourFinder.findContours(thresh);
+}
+
+void ofApp::updateClipper(){
+    clips.clear();
+    clipper.Clear();
+    clipper.addPolylines(subjects, ClipperLib::ptSubject);
+    clipper.addPolylines(masks, ClipperLib::ptClip);
+    
+    clips = clipper.getClipped(currentClipperType);
+}
+
+void ofApp::drawSubjects(){
+    for (ofPolyline &subject: subjects)
+    {
+        ofSetColor(210, 168, 210, 50);
+        ofBeginShape();
+        for (std::size_t i = 0; i < subject.size(); i++)
+        {
+            ofVertex(subject[i]);
+        }
+        ofEndShape();
+    }
+}
+
+void ofApp::drawMasks(){
+    for (ofPolyline &mask: masks)
+    {
+        ofSetColor(210, 168, 210, 50);
+        ofBeginShape();
+        for (std::size_t i = 0; i < mask.size(); i++)
+        {
+            ofVertex(mask[i]);
+        }
+        ofEndShape();
+    }
+}
+
+void ofApp::drawClips(){
+    for (ofPolyline &clip: clips)
+    {
+        ofSetColor(182, 255, 143, 100);
+        ofBeginShape();
+        for (std::size_t i = 0; i < clips.size(); i++)
+        {
+            ofVertex(clip[i]);
+        }
+        ofEndShape();
+    }
 }

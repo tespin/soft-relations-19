@@ -15,12 +15,15 @@ class ofApp : public ofBaseApp{
 
         void setupGui();
         void thresholdInput();
+        void findContours();
+        void updateClipper();
+    
+        void drawSubjects();
+        void drawMasks();
+        void drawClips();
     
 		void mousePressed(int x, int y, int button);
 		void mouseReleased(int x, int y, int button);
-    
-        void replay();
-        void calculateReplayStart();
     
         ofVideoGrabber cam;
         ofxCv::ContourFinder contourFinder;
@@ -37,22 +40,22 @@ class ofApp : public ofBaseApp{
         ofParameter<float> contourMaxArea;
         ofParameter<bool> findHoles;
     
-        ofPolyline recording;
-        ofPolyline shape;
-        ofPolyline shape2;
+    ofx::Clipper clipper;
     
-        bool bIsRecording;
-        bool bWasRecorded;
+    ClipperLib::ClipType currentClipperType;
     
-        float currentTime;
-        float startRecordingTime;
-        float endTime;
-        float recordingLength;
-        float replayTime;
-        float prevTime;
-        float startReplayTime;
-        float timeBetweenReplays;
+    std::vector<ofPolyline> clips;
+    std::vector<ofPolyline> subjects;
+    std::vector<ofPolyline> masks;
     
-        std::map<float, ofPolyline> recordings;
+    float currentTime;
+    float recordingStartTime;
+    float recordingEndTime;
+    float replayStartTime;
+    
+    std::vector<ofPolyline> recordings;
+    std::map<float, ofPolyline> stills;
+    
+    bool bIsRecording;
     
 };
