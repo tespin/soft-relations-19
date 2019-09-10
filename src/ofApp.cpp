@@ -2,14 +2,40 @@
 
 void ofApp::setup(){
     ofSetBackgroundColor(255);
+    ofEnableAlphaBlending();
+//    cam.setDeviceID(0);
+    cam.setup(ofGetWidth(), ofGetHeight());
     
+    setupGui();
+    
+    tracker.setPersistence(30);
+    tracker.setMaximumDistance(64);
+    
+    bNeedsUpdate = false;
     currentClipperType = ClipperLib::ctIntersection;
 }
 
 void ofApp::update(){
     currentTime = ofGetElapsedTimef();
+    tracker = contourFinder.getTracker();
     
-    updateClipper();
+    cam.update();
+    
+    if (cam.isFrameNew())
+    {
+        bNeedsUpdate = true;
+        thresholdInput();
+        findContours();
+        assignPolyType();
+        
+    }
+    
+    if (bNeedsUpdate)
+    {
+                updateClipper();
+        std::cout << clips.size() << std::endl;
+        bNeedsUpdate = false;
+    }
     
     if (clips.size() != 0)
     {   
@@ -20,11 +46,19 @@ void ofApp::update(){
 
 void ofApp::draw(){
     ofSetBackgroundColor(255);
-    ofSetColor(255);
     
-    drawSubjects();
-    drawMasks();
+    ofSetColor(255);
+//    cam.draw(0, 0);
+    thresh.draw(0, 0);
+    
+    ofSetColor (210, 168, 210);
+    contourFinder.draw();
+    
+//    drawSubjects();
+//    drawMasks();
     drawClips();
+    
+    gui.draw();
 }
 
 void ofApp::mousePressed(int x, int y, int button){
@@ -103,10 +137,34 @@ void ofApp::drawClips(){
     {
         ofSetColor(182, 255, 143, 100);
         ofBeginShape();
-        for (std::size_t i = 0; i < clips.size(); i++)
+        for (std::size_t i = 0; i < clip.size(); i++)
         {
             ofVertex(clip[i]);
         }
         ofEndShape();
+    }
+}
+
+void ofApp::assignPolyType(){
+    std::vector<unsigned int> newLabels = tracker.getNewLabels();
+    
+//    subjects.clear();
+//    masks.clear();
+    for (std::size_t i = 0; i < contourFinder.size(); i++)
+    {
+        unsigned int label = contourFinder.getLabel(i);
+        
+        std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), label);
+        if (iter != newLabels.end())
+        {
+            if (i % 2 == 0) subjects.push_back(contourFinder.getPolyline(i));
+            else masks.push_back(contourFinder.getPolyline(i));
+        }
+        else
+        {
+            
+        }
+        bNeedsUpdate = true;
+        
     }
 }

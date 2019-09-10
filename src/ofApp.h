@@ -17,6 +17,7 @@ class ofApp : public ofBaseApp{
         void thresholdInput();
         void findContours();
         void updateClipper();
+        void assignPolyType();
     
         void drawSubjects();
         void drawMasks();
@@ -27,6 +28,7 @@ class ofApp : public ofBaseApp{
     
         ofVideoGrabber cam;
         ofxCv::ContourFinder contourFinder;
+        ofxCv::RectTracker tracker;
     
         ofImage thresh;
     
@@ -40,22 +42,23 @@ class ofApp : public ofBaseApp{
         ofParameter<float> contourMaxArea;
         ofParameter<bool> findHoles;
     
-    ofx::Clipper clipper;
+        ofx::Clipper clipper;
+        
+        ClipperLib::ClipType currentClipperType;
+        
+        std::vector<ofPolyline> clips;
+        std::vector<ofPolyline> subjects;
+        std::vector<ofPolyline> masks;
     
-    ClipperLib::ClipType currentClipperType;
-    
-    std::vector<ofPolyline> clips;
-    std::vector<ofPolyline> subjects;
-    std::vector<ofPolyline> masks;
-    
-    float currentTime;
-    float recordingStartTime;
-    float recordingEndTime;
-    float replayStartTime;
-    
-    std::vector<ofPolyline> recordings;
-    std::map<float, ofPolyline> stills;
-    
-    bool bIsRecording;
+        float currentTime;
+        float recordingStartTime;
+        float recordingEndTime;
+        float replayStartTime;
+        
+        std::vector<ofPolyline> recordings;
+        std::map<float, ofPolyline> stills;
+        
+        bool bIsRecording;
+        bool bNeedsUpdate;
     
 };
