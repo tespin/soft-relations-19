@@ -8,8 +8,8 @@ void ofApp::setup(){
     
     setupGui();
     
-    tracker.setPersistence(30);
-    tracker.setMaximumDistance(64);
+    tracker.setPersistence(1000);
+    tracker.setMaximumDistance(1280);
     
     bNeedsUpdate = false;
     currentClipperType = ClipperLib::ctIntersection;
@@ -27,15 +27,16 @@ void ofApp::update(){
         thresholdInput();
         findContours();
         assignPolyType();
-        
     }
     
-    if (bNeedsUpdate)
-    {
-                updateClipper();
-        std::cout << clips.size() << std::endl;
-        bNeedsUpdate = false;
-    }
+    updateClipper();
+    
+//    if (bNeedsUpdate)
+//    {
+//                updateClipper();
+//        std::cout << clips.size() << std::endl;
+//        bNeedsUpdate = false;
+//    }
     
     if (clips.size() != 0)
     {   
@@ -52,10 +53,10 @@ void ofApp::draw(){
     thresh.draw(0, 0);
     
     ofSetColor (210, 168, 210);
-    contourFinder.draw();
+//    contourFinder.draw();
     
-//    drawSubjects();
-//    drawMasks();
+    drawSubjects();
+    drawMasks();
     drawClips();
     
     gui.draw();
@@ -109,7 +110,9 @@ void ofApp::updateClipper(){
 void ofApp::drawSubjects(){
     for (ofPolyline &subject: subjects)
     {
-        ofSetColor(210, 168, 210, 50);
+//        subject.draw();
+        
+        ofSetColor(255, 0, 0, 50);
         ofBeginShape();
         for (std::size_t i = 0; i < subject.size(); i++)
         {
@@ -122,7 +125,10 @@ void ofApp::drawSubjects(){
 void ofApp::drawMasks(){
     for (ofPolyline &mask: masks)
     {
-        ofSetColor(210, 168, 210, 50);
+//        mask.draw();
+        
+//        ofSetColor(210, 168, 210, 50);
+        ofSetColor(0, 255, 0, 50);
         ofBeginShape();
         for (std::size_t i = 0; i < mask.size(); i++)
         {
@@ -135,7 +141,8 @@ void ofApp::drawMasks(){
 void ofApp::drawClips(){
     for (ofPolyline &clip: clips)
     {
-        ofSetColor(182, 255, 143, 100);
+//        ofSetColor(182, 255, 143, 100);
+        ofSetColor(0, 0, 255, 50);
         ofBeginShape();
         for (std::size_t i = 0; i < clip.size(); i++)
         {
@@ -148,23 +155,44 @@ void ofApp::drawClips(){
 void ofApp::assignPolyType(){
     std::vector<unsigned int> newLabels = tracker.getNewLabels();
     
-//    subjects.clear();
-//    masks.clear();
+    subjects.clear();
+    masks.clear();
     for (std::size_t i = 0; i < contourFinder.size(); i++)
     {
         unsigned int label = contourFinder.getLabel(i);
+        ofPolyline currentPolyline = contourFinder.getPolyline(i);
         
-        std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), label);
-        if (iter != newLabels.end())
+        if (tracker.existsPrevious(label))
         {
-            if (i % 2 == 0) subjects.push_back(contourFinder.getPolyline(i));
-            else masks.push_back(contourFinder.getPolyline(i));
+            if (i % 2 == 0)
+            {
+                subjects.push_back(currentPolyline);
+            }
+            else
+            {
+                masks.push_back(currentPolyline);
+            }
         }
-        else
-        {
-            
-        }
-        bNeedsUpdate = true;
+        
+//        std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), label);
+//        if (iter != newLabels.end())
+//        {
+//            if (i % 2 == 0)
+//            {
+//                subjects.clear();
+//                subjects.push_back(contourFinder.getPolyline(i));
+//            }
+//            else
+//            {
+//                masks.clear();
+//                masks.push_back(contourFinder.getPolyline(i));
+//            }
+//        }
+//        else
+//        {
+//
+//        }
+//        bNeedsUpdate = true;
         
     }
 }
