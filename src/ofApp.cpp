@@ -13,6 +13,8 @@ void ofApp::setup(){
     
     bNeedsUpdate = false;
     currentClipperType = ClipperLib::ctIntersection;
+    
+    
 }
 
 void ofApp::update(){
@@ -26,11 +28,16 @@ void ofApp::update(){
         bNeedsUpdate = true;
         thresholdInput();
         findContours();
-        assignPolyType();
+//        assignPolyType();
+        startRecording();
     }
     
     updateClipper();
     
+    if (recordings.size() != 0)
+    {
+        std::cout << recordings[0].recordingStartTime << std::endl;
+    }
 //    if (bNeedsUpdate)
 //    {
 //                updateClipper();
@@ -38,11 +45,37 @@ void ofApp::update(){
 //        bNeedsUpdate = false;
 //    }
     
-    if (clips.size() != 0)
-    {   
+//    if (clips.size() != 0)
+//    {
         // record
         // when/how to end recording?
-    }
+        
+//        void ofApp::replay() {
+//            if (replayTime >= startRecordingTime + recordingLength)
+//            {
+//                startReplayTime = currentTime;
+//            }
+//            
+//            replayTime = currentTime - startReplayTime + startRecordingTime;
+//            
+//            std::map<float, ofPolyline>::iterator lowBound;
+//            lowBound = recordings.lower_bound(replayTime);
+//            
+//            if (lowBound != recordings.end())
+//            {
+//                recording = lowBound->second;
+//            }
+//            
+//            ofSetColor(210, 168, 210);
+//            
+//            ofBeginShape();
+//            for (std::size_t i = 0; i < recording.size(); i++)
+//            {
+//                ofVertex(recording[i]);
+//            }
+//            ofEndShape();
+//        }
+        
 }
 
 void ofApp::draw(){
@@ -161,7 +194,31 @@ void ofApp::assignPolyType(){
         masks.push_back(polyline);
     }
     
-    
+//    void ofApp::replay() {
+//        if (replayTime >= startRecordingTime + recordingLength)
+//        {
+//            startReplayTime = currentTime;
+//        }
+//        
+//        replayTime = currentTime - startReplayTime + startRecordingTime;
+//        
+//        std::map<float, ofPolyline>::iterator lowBound;
+//        lowBound = recordings.lower_bound(replayTime);
+//        
+//        if (lowBound != recordings.end())
+//        {
+//            recording = lowBound->second;
+//        }
+//        
+//        ofSetColor(210, 168, 210);
+//        
+//        ofBeginShape();
+//        for (std::size_t i = 0; i < recording.size(); i++)
+//        {
+//            ofVertex(recording[i]);
+//        }
+//        ofEndShape();
+//    }
 //    std::vector<unsigned int> newLabels = tracker.getNewLabels();
 //
 //    subjects.clear();
@@ -203,4 +260,24 @@ void ofApp::assignPolyType(){
 //        }
 //        bNeedsUpdate = true;
     
+}
+
+void ofApp::startRecording(){
+    std::vector<unsigned int> newLabels = tracker.getNewLabels();
+    
+    for (std::size_t i = 0; i < contourFinder.size(); i++)
+    {
+        unsigned int label = contourFinder.getLabel(i);
+        
+        std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), label);
+        
+        if (iter != newLabels.end())
+        {
+            Recording recording;
+            recording.recordingStartTime = currentTime;
+            
+            recordings.push_back(recording);
+            // record
+        }
+    }
 }
