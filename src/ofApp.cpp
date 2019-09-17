@@ -153,27 +153,36 @@ void ofApp::drawClips(){
 }
 
 void ofApp::assignPolyType(){
-    std::vector<unsigned int> newLabels = tracker.getNewLabels();
-    
     subjects.clear();
     masks.clear();
-    for (std::size_t i = 0; i < contourFinder.size(); i++)
+    
+    for (ofPolyline polyline: contourFinder.getPolylines())
     {
-        unsigned int label = contourFinder.getLabel(i);
-        ofPolyline currentPolyline = contourFinder.getPolyline(i);
-        
-        if (tracker.existsPrevious(label))
-        {
-            if (i % 2 == 0)
-            {
-                subjects.push_back(currentPolyline);
-            }
-            else
-            {
-                masks.push_back(currentPolyline);
-            }
-        }
-        
+        masks.push_back(polyline);
+    }
+    
+    
+//    std::vector<unsigned int> newLabels = tracker.getNewLabels();
+//
+//    subjects.clear();
+//    masks.clear();
+//    for (std::size_t i = 0; i < contourFinder.size(); i++)
+//    {
+//        unsigned int label = contourFinder.getLabel(i);
+//        ofPolyline currentPolyline = contourFinder.getPolyline(i);
+//
+//        if (tracker.existsPrevious(label))
+//        {
+//            if (i % 2 == 0)
+//            {
+//                subjects.push_back(currentPolyline);
+//            }
+//            else
+//            {
+//                masks.push_back(currentPolyline);
+//            }
+//        }
+    
 //        std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), label);
 //        if (iter != newLabels.end())
 //        {
@@ -193,6 +202,5 @@ void ofApp::assignPolyType(){
 //
 //        }
 //        bNeedsUpdate = true;
-        
-    }
+    
 }
