@@ -29,53 +29,15 @@ void ofApp::update(){
         thresholdInput();
         findContours();
 //        assignPolyType();
-        startRecording();
+        record();
     }
     
     updateClipper();
     
     if (recordings.size() != 0)
     {
-        std::cout << recordings[0].recordingStartTime << std::endl;
-    }
-//    if (bNeedsUpdate)
-//    {
-//                updateClipper();
-//        std::cout << clips.size() << std::endl;
-//        bNeedsUpdate = false;
-//    }
-    
-//    if (clips.size() != 0)
-//    {
-        // record
-        // when/how to end recording?
-        
-//        void ofApp::replay() {
-//            if (replayTime >= startRecordingTime + recordingLength)
-//            {
-//                startReplayTime = currentTime;
-//            }
-//            
-//            replayTime = currentTime - startReplayTime + startRecordingTime;
-//            
-//            std::map<float, ofPolyline>::iterator lowBound;
-//            lowBound = recordings.lower_bound(replayTime);
-//            
-//            if (lowBound != recordings.end())
-//            {
-//                recording = lowBound->second;
-//            }
-//            
-//            ofSetColor(210, 168, 210);
-//            
-//            ofBeginShape();
-//            for (std::size_t i = 0; i < recording.size(); i++)
-//            {
-//                ofVertex(recording[i]);
-//            }
-//            ofEndShape();
-//        }
-        
+        std::cout << recordings[0].startTime << std::endl;
+    }        
 }
 
 void ofApp::draw(){
@@ -281,44 +243,12 @@ void ofApp::addNewRecording(){
             recordings.push_back(recording);
         }
     }
-    
-//    for (Recording &recording: recordings)
-//    {
-//        if (recording.bIsRecording)
-//        {
-//            recording.frames.insert(std::make_pair(currentTime, ))
-//        }
-//    }
-    
-    //        if (replayTime >= startRecordingTime + recordingLength)
-    //        {
-    //            startReplayTime = currentTime;
-    //        }
-    //
-    //        replayTime = currentTime - startReplayTime + startRecordingTime;
-    //
-    //        std::map<float, ofPolyline>::iterator lowBound;
-    //        lowBound = recordings.lower_bound(replayTime);
-    //
-    //        if (lowBound != recordings.end())
-    //        {
-    //            recording = lowBound->second;
-    //        }
-    //
-    //        ofSetColor(210, 168, 210);
-    //
-    //        ofBeginShape();
-    //        for (std::size_t i = 0; i < recording.size(); i++)
-    //        {
-    //            ofVertex(recording[i]);
-    //        }
-    //        ofEndShape();
-    
 }
 
-void ofApp::startRecording(){
+void ofApp::record(){
     for (Recording &recording: recordings)
     {
+        std::vector<unsigned int> deadLabels = tracker.getDeadLabels();
         unsigned int label = recording.label;
         
         for (std::size_t i = 0; i < contourFinder.size(); i++)
@@ -332,15 +262,42 @@ void ofApp::startRecording(){
         {
             recording.frames.insert(std::make_pair(currentTime, recording.frame));
             
-//            if (recording.frames.size() > )
+            std::vector<unsigned int>::iterator iter = std::find(deadLabels.begin(), deadLabels.end(), label);
+            
+            if (iter != deadLabels.end())
+            {
+                recording.endTime = currentTime;
+                recording.length = recording.endTime - recording.startTime;
+                recording.bIsRecording = false;
+            }
+            else if (recording.frames.size() > 1000)
+            {
+                recording.endTime = currentTime;
+                recording.length = recording.endTime - recording.startTime;
+                recording.bIsRecording = false;
+            }
         }
     }
 }
 
-void ofApp::startReplay(){
+void ofApp::replay(){
     for (Recording &recording: recordings)
     {
-//        if (recording.replayStartTime >= recording.startTime +)
+        if (recording.replayStartTime >= recording.startTime + recording.length)
+        {
+            recording.replayStartTime = currentTime;
+        }
+        
+        float replayTime = currentTime - recording.replayStartTime + recording.startTime;
+        
+        std::map<float, ofPolyline>::iterator lowBound;
+        lowBound = recording.frames.lower_bound(replayTime);
+        
+        if (lowBound != recording.frames.end())
+        {
+            recording.currentFrame = lowBound->second;
+        }
+        
     }
     
     //        if (replayTime >= startRecordingTime + recordingLength)
