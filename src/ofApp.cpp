@@ -262,7 +262,7 @@ void ofApp::assignPolyType(){
     
 }
 
-void ofApp::startRecording(){
+void ofApp::addNewRecording(){
     std::vector<unsigned int> newLabels = tracker.getNewLabels();
     
     for (std::size_t i = 0; i < contourFinder.size(); i++)
@@ -274,10 +274,96 @@ void ofApp::startRecording(){
         if (iter != newLabels.end())
         {
             Recording recording;
-            recording.recordingStartTime = currentTime;
+            recording.bIsRecording = true;
+            recording.startTime = currentTime;
+            recording.label = label;
             
             recordings.push_back(recording);
-            // record
         }
     }
+    
+//    for (Recording &recording: recordings)
+//    {
+//        if (recording.bIsRecording)
+//        {
+//            recording.frames.insert(std::make_pair(currentTime, ))
+//        }
+//    }
+    
+    //        if (replayTime >= startRecordingTime + recordingLength)
+    //        {
+    //            startReplayTime = currentTime;
+    //        }
+    //
+    //        replayTime = currentTime - startReplayTime + startRecordingTime;
+    //
+    //        std::map<float, ofPolyline>::iterator lowBound;
+    //        lowBound = recordings.lower_bound(replayTime);
+    //
+    //        if (lowBound != recordings.end())
+    //        {
+    //            recording = lowBound->second;
+    //        }
+    //
+    //        ofSetColor(210, 168, 210);
+    //
+    //        ofBeginShape();
+    //        for (std::size_t i = 0; i < recording.size(); i++)
+    //        {
+    //            ofVertex(recording[i]);
+    //        }
+    //        ofEndShape();
+    
+}
+
+void ofApp::startRecording(){
+    for (Recording &recording: recordings)
+    {
+        unsigned int label = recording.label;
+        
+        for (std::size_t i = 0; i < contourFinder.size(); i++)
+        {
+            unsigned int contourLabel = contourFinder.getLabel(i);
+            
+            if (label == contourLabel) recording.frame = contourFinder.getPolyline(i);
+        }
+        
+        if (recording.bIsRecording)
+        {
+            recording.frames.insert(std::make_pair(currentTime, recording.frame));
+            
+//            if (recording.frames.size() > )
+        }
+    }
+}
+
+void ofApp::startReplay(){
+    for (Recording &recording: recordings)
+    {
+//        if (recording.replayStartTime >= recording.startTime +)
+    }
+    
+    //        if (replayTime >= startRecordingTime + recordingLength)
+    //        {
+    //            startReplayTime = currentTime;
+    //        }
+    //
+    //        replayTime = currentTime - startReplayTime + startRecordingTime;
+    //
+    //        std::map<float, ofPolyline>::iterator lowBound;
+    //        lowBound = recordings.lower_bound(replayTime);
+    //
+    //        if (lowBound != recordings.end())
+    //        {
+    //            recording = lowBound->second;
+    //        }
+    //
+    //        ofSetColor(210, 168, 210);
+    //
+    //        ofBeginShape();
+    //        for (std::size_t i = 0; i < recording.size(); i++)
+    //        {
+    //            ofVertex(recording[i]);
+    //        }
+    //        ofEndShape();
 }

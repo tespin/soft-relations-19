@@ -12,10 +12,13 @@ class ofApp : public ofBaseApp{
     
         struct Recording
         {
-            float recordingStartTime;
-            float recordingEndTime;
+            float startTime;
+            float endTime;
             float replayStartTime;
+            unsigned int label;
+            ofPolyline frame;
             std::map<float, ofPolyline> frames;
+            bool bIsRecording;
         };
     
 		void setup();
@@ -27,7 +30,9 @@ class ofApp : public ofBaseApp{
         void findContours();
         void updateClipper();
         void assignPolyType();
+        void addNewRecording();
         void startRecording();
+        void startReplay();
     
         void drawSubjects();
         void drawMasks();
@@ -69,7 +74,6 @@ class ofApp : public ofBaseApp{
         std::vector<Recording> recordings;
 //        std::map<float, ofPolyline> frames;
     
-        bool bIsRecording;
         bool bNeedsUpdate;
     
 };
