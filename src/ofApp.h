@@ -21,6 +21,7 @@ class ofApp : public ofBaseApp{
             ofPolyline currentFrame;;
             std::map<float, ofPolyline> frames;
             bool bIsRecording;
+            bool bWasRecorded;
         };
     
 		void setup();
@@ -33,8 +34,10 @@ class ofApp : public ofBaseApp{
         void updateClipper();
         void assignPolyType();
         void addNewRecording();
-        void record();
-        void replay();
+//        void record();
+        void record(Recording recording, unsigned int label);
+//        void replay();
+        void replay(Recording recording);
     
         void drawSubjects();
         void drawMasks();
