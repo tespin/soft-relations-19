@@ -34,9 +34,7 @@ class ofApp : public ofBaseApp{
         void updateClipper();
         void assignPolyType();
         void addNewRecording();
-//        void record();
         void record(Recording recording, unsigned int label);
-//        void replay();
         void replay(Recording recording);
     
         void drawSubjects();
@@ -71,14 +69,7 @@ class ofApp : public ofBaseApp{
         std::vector<ofPolyline> masks;
     
         float currentTime;
-//        float replayTime;
-//        float recordingStartTime;
-//        float recordingEndTime;
-//        float replayStartTime;
-    
-//        std::vector<ofPolyline> recordings;
         std::vector<Recording> recordings;
-//        std::map<float, ofPolyline> frames;
     
         bool bNeedsUpdate;
     
