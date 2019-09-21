@@ -26,6 +26,8 @@ void ofApp::update(){
         bNeedsUpdate = true;
         thresholdInput();
         findContours();
+        initializeRecording();
+        endRecording();
 //        addNewRecording();
 //        assignPolyType();
 //        record();
@@ -49,7 +51,17 @@ void ofApp::update(){
         
     }
     
-    updateClipper();
+    
+    
+//    updateClipper();
+    
+//    for (Recording &recording: recordings)
+//    {
+//        if (!recording.bIsRecording)
+//        {
+//            std::cout << "Recording " + std::to_string(recording.label) + " is no longer recording." << std::endl;
+//        }
+//    }
     
 //    std::cout << recordings.size() << std::endl;
     
@@ -67,18 +79,19 @@ void ofApp::draw(){
     ofSetColor(255);
 //    cam.draw(0, 0);
     thresh.draw(0, 0);
+    displayLabelStatus();
     
 //    for (Recording &recording: recordings)
 //    {
 //        if (recording.bWasRecorded) replay(recording);
 //    }
     
-    ofSetColor (210, 168, 210);
-    contourFinder.draw();
+//    ofSetColor (210, 168, 210);
+//    contourFinder.draw();
     
-    drawSubjects();
-    drawMasks();
-    drawClips();
+//    drawSubjects();
+//    drawMasks();
+//    drawClips();
     
 //    if (recordings.size() != 0)
 //    {
@@ -194,7 +207,28 @@ void ofApp::assignPolyType(){
     }
 }
 
-void ofApp::addNewRecording(){
+void ofApp::initializeRecording(){
+    std::vector<unsigned int> newLabels = tracker.getNewLabels();
+    
+    for (std::size_t i = 0; i < contourFinder.size(); i++)
+    {
+        unsigned int _label = contourFinder.getLabel(i);
+        std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), _label);
+        
+        if (iter != newLabels.end())
+        {
+            Recording recording;
+            recording.bIsRecording = true;
+            recording.label = _label;
+            recordings.push_back(recording);
+        }
+        
+        if (recordings.size() > 20)
+        {
+            recordings.pop_front();
+        }
+    }
+    
 //    std::vector<unsigned int> newLabels = tracker.getNewLabels();
 //
 //    for (std::size_t i = 0; i < contourFinder.size(); i++)
@@ -202,6 +236,22 @@ void ofApp::addNewRecording(){
 //        unsigned int label = contourFinder.getLabel(i);
 //
 //        std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), label);
+//    for (std::size_t i = 0; i < contourFinder.size(); i++)
+        //    {
+        //        unsigned int label = contourFinder.getLabel(i);
+        //
+        //        std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), label);
+        //
+        //        if (iter != newLabels.end())
+        //        {
+        //            Recording recording;
+        //            recording.bIsRecording = true;
+        //            recording.startTime = currentTime;
+        //            recording.label = label;
+        //
+        //            recordings.push_back(recording);
+        //        }
+        //    }
 //
 //        if (iter != newLabels.end())
 //        {
@@ -213,6 +263,27 @@ void ofApp::addNewRecording(){
 //            recordings.push_back(recording);
 //        }
 //    }
+}
+
+void ofApp::endRecording(){
+    std::vector<unsigned int> deadLabels = tracker.getDeadLabels();
+    
+    for (std::size_t i = 0; i < contourFinder.size(); i++)
+    {
+        unsigned int _label = contourFinder.getLabel(i);
+        
+        std::vector<unsigned int>::iterator iter = std::find (deadLabels.begin(), deadLabels.end(), _label);
+        
+        if (iter != deadLabels.end())
+        {
+            if (recordings[i].label == _label)
+            {
+                recordings[i].bIsRecording = false;
+                
+                std::cout << "Recording " + std::to_string(_label) + " has stopped" << std::endl;
+            }
+        }
+    }
 }
 
 void ofApp::record(Recording recording, unsigned int label){
@@ -266,4 +337,37 @@ void ofApp::replay(Recording recording){
 //        ofVertex(recording.currentFrame[i]);
 //    }
 //    ofEndShape();
+}
+
+void ofApp::displayLabelStatus(){
+    std::vector<unsigned int> newLabels = tracker.getNewLabels();
+    std::vector<unsigned int> currentLabels = tracker.getCurrentLabels();
+    
+    ofColor status;
+    for (std::size_t i = 0; i < contourFinder.size(); i++)
+    {
+        ofPolyline test;
+        test = contourFinder.getPolylines()[i];
+        
+        unsigned int _label = contourFinder.getLabel(i);
+        
+        std::vector<unsigned int>::iterator newIter = std::find(newLabels.begin(), newLabels.end(), _label);
+        
+        std::vector<unsigned int>::iterator currentIter = std::find(currentLabels.begin(), currentLabels.end(), _label);
+        
+        if (newIter != newLabels.end())
+        {
+            // is a new label
+            status = ofColor(255, 0, 0);
+        }
+        else
+        {
+            status = ofColor(0, 255, 0);
+        }
+        
+        ofSetColor(status);
+        test.draw();
+        
+    }
+        
 }

@@ -24,6 +24,8 @@ class ofApp : public ofBaseApp{
             bool bWasRecorded;
         };
     
+    
+    
 		void setup();
 		void update();
 		void draw();
@@ -33,9 +35,11 @@ class ofApp : public ofBaseApp{
         void findContours();
         void updateClipper();
         void assignPolyType();
-        void addNewRecording();
+        void initializeRecording();
+        void endRecording();
         void record(Recording recording, unsigned int label);
         void replay(Recording recording);
+        void displayLabelStatus();
     
         void drawSubjects();
         void drawMasks();
@@ -69,7 +73,8 @@ class ofApp : public ofBaseApp{
         std::vector<ofPolyline> masks;
     
         float currentTime;
-        std::vector<Recording> recordings;
+//        std::vector<Recording> recordings;
+        std::deque<Recording> recordings;
     
         bool bNeedsUpdate;
     
