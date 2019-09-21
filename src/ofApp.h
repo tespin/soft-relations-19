@@ -5,24 +5,25 @@
 #include "ofxClipper.h"
 #include "ofxGui.h"
 #include "ofxOpenCv.h"
+#include "Recording.h"
 
 class ofApp : public ofBaseApp{
 
 	public:
     
-        struct Recording
-        {
-            float startTime;
-            float endTime;
-            float replayStartTime;
-            float length;
-            unsigned int label;
-            ofPolyline frame;
-            ofPolyline currentFrame;;
-            std::map<float, ofPolyline> frames;
-            bool bIsRecording;
-            bool bWasRecorded;
-        };
+//        struct Recording
+//        {
+//            float startTime;
+//            float endTime;
+//            float replayStartTime;
+//            float length;
+//            unsigned int label;
+//            ofPolyline frame;
+//            ofPolyline currentFrame;;
+//            std::map<float, ofPolyline> frames;
+//            bool bIsRecording;
+//            bool bWasRecorded;
+//        };
     
     
     
@@ -63,7 +64,8 @@ class ofApp : public ofBaseApp{
         ofParameter<float> contourMinArea;
         ofParameter<float> contourMaxArea;
         ofParameter<bool> findHoles;
-    
+        ofParameter<unsigned int> persistence;
+        ofParameter<unsigned int> maxDistance;
         ofx::Clipper clipper;
         
         ClipperLib::ClipType currentClipperType;

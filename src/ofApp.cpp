@@ -8,8 +8,8 @@ void ofApp::setup(){
     
     setupGui();
     
-    tracker.setPersistence(500);
-    tracker.setMaximumDistance(640);
+//    tracker.setPersistence(persistence);
+//    tracker.setMaximumDistance(maxDistance);
     
     bNeedsUpdate = false;
     currentClipperType = ClipperLib::ctIntersection;
@@ -17,6 +17,9 @@ void ofApp::setup(){
 
 void ofApp::update(){
     currentTime = ofGetElapsedTimef();
+    
+    tracker.setPersistence(persistence);
+    tracker.setMaximumDistance(maxDistance);
     tracker = contourFinder.getTracker();
     
     cam.update();
@@ -26,8 +29,8 @@ void ofApp::update(){
         bNeedsUpdate = true;
         thresholdInput();
         findContours();
-        initializeRecording();
-        endRecording();
+//        initializeRecording();
+//        endRecording();
 //        addNewRecording();
 //        assignPolyType();
 //        record();
@@ -125,6 +128,8 @@ void ofApp::setupGui(){
     gui.add(findHoles.set("Find Holes", true));
     gui.add(contourMinArea.set("Contour Min Area", 25, 1, 100));
     gui.add(contourMaxArea.set("Contour Max Area", 200, 1, 1000));
+    gui.add(persistence.set("Persistence", 24, 0, 500));
+    gui.add(maxDistance.set("Maximum Distance", 48, 0, 500));
 }
 
 void ofApp::thresholdInput(){
@@ -215,18 +220,18 @@ void ofApp::initializeRecording(){
         unsigned int _label = contourFinder.getLabel(i);
         std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), _label);
         
-        if (iter != newLabels.end())
-        {
-            Recording recording;
-            recording.bIsRecording = true;
-            recording.label = _label;
-            recordings.push_back(recording);
-        }
+//        if (iter != newLabels.end())
+//        {
+//            Recording recording;
+//            recording.bIsRecording = true;
+//            recording.label = _label;
+//            recordings.push_back(recording);
+//        }
         
-        if (recordings.size() > 20)
-        {
-            recordings.pop_front();
-        }
+//        if (recordings.size() > 20)
+//        {
+//            recordings.pop_front();
+//        }
     }
     
 //    std::vector<unsigned int> newLabels = tracker.getNewLabels();
@@ -266,24 +271,24 @@ void ofApp::initializeRecording(){
 }
 
 void ofApp::endRecording(){
-    std::vector<unsigned int> deadLabels = tracker.getDeadLabels();
-    
-    for (std::size_t i = 0; i < contourFinder.size(); i++)
-    {
-        unsigned int _label = contourFinder.getLabel(i);
-        
-        std::vector<unsigned int>::iterator iter = std::find (deadLabels.begin(), deadLabels.end(), _label);
-        
-        if (iter != deadLabels.end())
-        {
-            if (recordings[i].label == _label)
-            {
-                recordings[i].bIsRecording = false;
-                
-                std::cout << "Recording " + std::to_string(_label) + " has stopped" << std::endl;
-            }
-        }
-    }
+//    std::vector<unsigned int> deadLabels = tracker.getDeadLabels();
+//
+//    for (std::size_t i = 0; i < contourFinder.size(); i++)
+//    {
+//        unsigned int _label = contourFinder.getLabel(i);
+//
+//        std::vector<unsigned int>::iterator iter = std::find (deadLabels.begin(), deadLabels.end(), _label);
+//
+//        if (iter != deadLabels.end())
+//        {
+//            if (recordings[i].label == _label)
+//            {
+//                recordings[i].bIsRecording = false;
+//
+//                std::cout << "Recording " + std::to_string(_label) + " has stopped" << std::endl;
+//            }
+//        }
+//    }
 }
 
 void ofApp::record(Recording recording, unsigned int label){
