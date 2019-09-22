@@ -8,5 +8,14 @@
 #include "Recording.h"
 
 void Recording::start(){
-//    bIsRecording = true;
+    
 }
+
+void Recording::update(){
+    if (bIsRecording) record();
+}
+
+void Recording::record(){
+        frames.insert(std::map<float, ofPolyline>::value_type(ofGetElapsedTimef(), currentFrame));
+}
+

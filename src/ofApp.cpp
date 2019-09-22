@@ -29,7 +29,7 @@ void ofApp::update(){
         bNeedsUpdate = true;
         thresholdInput();
         findContours();
-//        initializeRecording();
+        initializeRecording();
 //        endRecording();
 //        addNewRecording();
 //        assignPolyType();
@@ -65,6 +65,14 @@ void ofApp::update(){
 //            std::cout << "Recording " + std::to_string(recording.label) + " is no longer recording." << std::endl;
 //        }
 //    }
+    if (recordings.size() % 5 == 0)
+    {
+        for (Recording &recording: recordings)
+        {
+            std::cout << recording.getStartTime() << std::endl;
+        }
+        std::cout << "size: " + std::to_string(recordings.size()) << std::endl;
+    }
     
 //    std::cout << recordings.size() << std::endl;
     
@@ -128,8 +136,8 @@ void ofApp::setupGui(){
     gui.add(findHoles.set("Find Holes", true));
     gui.add(contourMinArea.set("Contour Min Area", 25, 1, 100));
     gui.add(contourMaxArea.set("Contour Max Area", 200, 1, 1000));
-    gui.add(persistence.set("Persistence", 24, 0, 500));
-    gui.add(maxDistance.set("Maximum Distance", 48, 0, 500));
+    gui.add(persistence.set("Persistence", 96, 0, 500));
+    gui.add(maxDistance.set("Maximum Distance", 96, 0, 500));
 }
 
 void ofApp::thresholdInput(){
@@ -219,6 +227,13 @@ void ofApp::initializeRecording(){
     {
         unsigned int _label = contourFinder.getLabel(i);
         std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), _label);
+        
+        if (iter != newLabels.end())
+        {
+            Recording recording;
+//            recording.setStartTime();
+            recordings.push_back(recording);
+        }
         
 //        if (iter != newLabels.end())
 //        {
