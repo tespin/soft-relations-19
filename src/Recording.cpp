@@ -68,7 +68,7 @@ void Recording::replay(){
     
     if (lowBound != frames.end()) currentFrame = lowBound->second;
     
-    ofSetColor(255, 0, 255);
+    ofSetColor(255, 0, 255, 50);
     
     ofBeginShape();
     for (std::size_t i = 0; i < currentFrame.size(); i++)
