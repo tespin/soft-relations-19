@@ -41,6 +41,7 @@ class ofApp : public ofBaseApp{
         void record(Recording recording, unsigned int label);
         void replay(Recording recording);
         void displayLabelStatus();
+        void updateRecording();
     
         void drawSubjects();
         void drawMasks();

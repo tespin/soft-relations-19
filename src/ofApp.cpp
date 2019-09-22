@@ -30,6 +30,13 @@ void ofApp::update(){
         thresholdInput();
         findContours();
         initializeRecording();
+        updateRecording();
+        
+        for (Recording &recording: recordings)
+        {
+            recording.checkStatus(tracker);
+            recording.update();
+        }
 //        endRecording();
 //        addNewRecording();
 //        assignPolyType();
@@ -69,9 +76,9 @@ void ofApp::update(){
     {
         for (Recording &recording: recordings)
         {
-            std::cout << recording.getStartTime() << std::endl;
+//            std::cout << recording.getStartTime() << std::endl;
         }
-        std::cout << "size: " + std::to_string(recordings.size()) << std::endl;
+//        std::cout << "size: " + std::to_string(recordings.size()) << std::endl;
     }
     
 //    std::cout << recordings.size() << std::endl;
@@ -89,8 +96,12 @@ void ofApp::draw(){
     
     ofSetColor(255);
 //    cam.draw(0, 0);
-    thresh.draw(0, 0);
-    displayLabelStatus();
+//    thresh.draw(0, 0);
+    for (Recording &recording: recordings)
+    {
+        if (recording.wasRecorded()) recording.replay();
+    }
+//    displayLabelStatus();
     
 //    for (Recording &recording: recordings)
 //    {
@@ -225,12 +236,12 @@ void ofApp::initializeRecording(){
     
     for (std::size_t i = 0; i < contourFinder.size(); i++)
     {
-        unsigned int _label = contourFinder.getLabel(i);
-        std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), _label);
+        unsigned int label = contourFinder.getLabel(i);
+        std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), label);
         
         if (iter != newLabels.end())
         {
-            Recording recording;
+            Recording recording{label};
 //            recording.setStartTime();
             recordings.push_back(recording);
         }
@@ -283,6 +294,22 @@ void ofApp::initializeRecording(){
 //            recordings.push_back(recording);
 //        }
 //    }
+}
+
+void ofApp::updateRecording(){
+    for (std::size_t i = 0; i < contourFinder.size(); i++)
+    {
+        unsigned int label = contourFinder.getLabel(i);
+        
+        for (Recording &recording: recordings)
+        {
+            if (recording.isRecording() && label == recording.getLabel())
+            {
+                recording.record(contourFinder.getPolyline(i));
+            }
+//            if (label == recording.getLabel()) recording.update(contourFinder.getPolyline(i));
+        }
+    }
 }
 
 void ofApp::endRecording(){

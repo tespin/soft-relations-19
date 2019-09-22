@@ -8,6 +8,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxCv.h"
 
 class Recording {
     
@@ -16,7 +17,12 @@ class Recording {
     
         bool bIsRecording;
         bool bWasRecorded;
+        bool bIsDead;
         float startTime;
+        float endTime;
+        float currentReplayTime;
+        float replayStartTime;
+        float length;
     
         ofPolyline currentFrame;
         std::map<float, ofPolyline> frames;
@@ -27,21 +33,38 @@ class Recording {
         :label(label)
         ,bIsRecording(true)
         ,bWasRecorded(false)
-        ,startTime(ofGetElapsedTimef()){
+        ,bIsDead(false)
+        ,startTime(ofGetElapsedTimef())
+        ,endTime(0.f)
+        ,currentReplayTime(0.f)
+        ,replayStartTime(0.f)
+        ,length(0.f){
         }
     
         void start();
         void update();
-        
-        void record();
+        void checkStatus(ofxCv::RectTracker tracker);
+
+        void record(ofPolyline &frame);
+        void endRecording();
+        void replay();
+//        void record();
     
-    float getStartTime() const {
-        return startTime;
-    }
+        float getStartTime() const {
+            return startTime;
+        }
     
-    unsigned int getLabel() const {
-        return label;
-    }
+        unsigned int getLabel() const {
+            return label;
+        }
+    
+        bool isRecording() const {
+            return bIsRecording;
+        }
+    
+        bool wasRecorded() const {
+            return bWasRecorded;
+        }
 
 //        bool bIsRecording;
 //        bool bWasRecorded;
