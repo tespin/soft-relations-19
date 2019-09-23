@@ -7,10 +7,6 @@
 
 #include "Recording.h"
 
-void Recording::start(){
-    
-}
-
 void Recording::update(){
     if (bIsDead || frames.size() > 199) endRecording();
 }
@@ -22,7 +18,7 @@ void Recording::checkStatus(ofxCv::RectTracker tracker){
     
     if (iter != deadLabels.end())
     {
-        std::cout << "Recording: " + std::to_string(label) + "is dead." << std::endl;
+        std::cout << "Recording: " + std::to_string(label) + " is dead." << std::endl;
         bIsDead = true;
     }
 }

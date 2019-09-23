@@ -48,7 +48,6 @@ class Recording {
         void record(ofPolyline &frame);
         void endRecording();
         void replay();
-//        void record();
     
         float getStartTime() const {
             return startTime;
@@ -65,16 +64,4 @@ class Recording {
         bool wasRecorded() const {
             return bWasRecorded;
         }
-
-//        bool bIsRecording;
-//        bool bWasRecorded;
-    //    float endTime;
-    //    float replayStartTime;
-    //    float length;
-    //    unsigned int label;
-    //    ofPolyline frame;
-    //    ofPolyline currentFrame;;
-    //    std::map<float, ofPolyline> frames;
-    //    bool bIsRecording;
-    //    bool bWasRecorded;
 };

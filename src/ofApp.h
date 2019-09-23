@@ -11,22 +11,6 @@ class ofApp : public ofBaseApp{
 
 	public:
     
-//        struct Recording
-//        {
-//            float startTime;
-//            float endTime;
-//            float replayStartTime;
-//            float length;
-//            unsigned int label;
-//            ofPolyline frame;
-//            ofPolyline currentFrame;;
-//            std::map<float, ofPolyline> frames;
-//            bool bIsRecording;
-//            bool bWasRecorded;
-//        };
-    
-    
-    
 		void setup();
 		void update();
 		void draw();
@@ -37,11 +21,8 @@ class ofApp : public ofBaseApp{
         void updateClipper();
         void assignPolyType();
         void initializeRecording();
-        void endRecording();
-        void record(Recording recording, unsigned int label);
-        void replay(Recording recording);
-        void displayLabelStatus();
         void updateRecording();
+        void displayLabelStatus();
     
         void drawSubjects();
         void drawMasks();
@@ -67,8 +48,8 @@ class ofApp : public ofBaseApp{
         ofParameter<bool> findHoles;
         ofParameter<unsigned int> persistence;
         ofParameter<unsigned int> maxDistance;
+    
         ofx::Clipper clipper;
-        
         ClipperLib::ClipType currentClipperType;
         
         std::vector<ofPolyline> clips;
@@ -76,7 +57,6 @@ class ofApp : public ofBaseApp{
         std::vector<ofPolyline> masks;
     
         float currentTime;
-//        std::vector<Recording> recordings;
         std::deque<Recording> recordings;
     
         bool bNeedsUpdate;
