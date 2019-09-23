@@ -23,9 +23,12 @@ void ofApp::update(){
     
     if (cam.isFrameNew())
     {
-        bNeedsUpdate = true;
         thresholdInput();
         findContours();
+        
+        if (recordings.size() > 5) recordings.pop_front();
+//        std::cout << "Size: " + recordings.size() << std::endl;
+        
         initializeRecording();
         updateRecording();
         
@@ -34,6 +37,16 @@ void ofApp::update(){
             recording.checkStatus(tracker);
             recording.update();
         }
+        
+        assignPolyType();
+        
+        if (bNeedsUpdate)
+        {
+            updateClipper();
+        }
+        
+        bNeedsUpdate = false;
+//        updateClipper();
     }
 }
 
@@ -50,6 +63,9 @@ void ofApp::draw(){
         if (recording.isRecording()) recording.displayCurrent();
         else if (recording.wasRecorded()) recording.replay();
     }
+    
+//    drawSubjects();
+//    drawMasks();
 }
 
 void ofApp::mousePressed(int x, int y, int button){
@@ -93,8 +109,9 @@ void ofApp::findContours(){
 void ofApp::updateClipper(){
     clips.clear();
     clipper.Clear();
-    clipper.addPolylines(subjects, ClipperLib::ptSubject);
+//    clipper.addPolylines(subjects, ClipperLib::ptSubject);
     clipper.addPolylines(masks, ClipperLib::ptClip);
+    
     
     clips = clipper.getClipped(currentClipperType);
 }
@@ -143,13 +160,23 @@ void ofApp::drawClips(){
 }
 
 void ofApp::assignPolyType(){
-    subjects.clear();
     masks.clear();
+    subjects.clear();
     
     for (ofPolyline polyline: contourFinder.getPolylines())
     {
         masks.push_back(polyline);
     }
+    
+    for (Recording &recording: recordings)
+    {
+        subjects.push_back(recording.getCurrentReplayFrame());
+    }
+    
+    std::cout << "masks: " + std::to_string(masks.size()) << std::endl;
+    std::cout << "subjects: " + std::to_string(subjects.size()) << std::endl;
+    
+    bNeedsUpdate = true;
 }
 
 void ofApp::initializeRecording(){

@@ -18,7 +18,7 @@ void Recording::checkStatus(ofxCv::RectTracker tracker){
     
     if (iter != deadLabels.end())
     {
-        std::cout << "Recording: " + std::to_string(label) + " is dead." << std::endl;
+//        std::cout << "Recording: " + std::to_string(label) + " is dead." << std::endl;
         bIsDead = true;
     }
 }
@@ -26,12 +26,12 @@ void Recording::checkStatus(ofxCv::RectTracker tracker){
 void Recording::record(ofPolyline &frame){
     frames.insert(std::map<float, ofPolyline>::value_type(ofGetElapsedTimef(), frame));
     
-    std::cout <<
-        "Recording: "
-        + std::to_string(label)
-        + "\nFrames: "
-        + std::to_string(frames.size())
-    << std::endl;    
+//    std::cout <<
+//        "Recording: "
+//        + std::to_string(label)
+//        + "\nFrames: "
+//        + std::to_string(frames.size())
+//    << std::endl;
 }
 
 void Recording::endRecording(){
@@ -42,13 +42,13 @@ void Recording::endRecording(){
         length = endTime - startTime;
         replayStartTime = ofGetElapsedTimef();
         
-        std::cout <<
-            "Recording " + std::to_string(label)
-            + " ended with " + std::to_string(frames.size()) + " frames. "
-            + "\nStart: " + std::to_string(startTime)
-            + "\nEnd: " + std::to_string(endTime)
-            + "\nLength: " + std::to_string(length)
-        << std::endl;
+//        std::cout <<
+//            "Recording " + std::to_string(label)
+//            + " ended with " + std::to_string(frames.size()) + " frames. "
+//            + "\nStart: " + std::to_string(startTime)
+//            + "\nEnd: " + std::to_string(endTime)
+//            + "\nLength: " + std::to_string(length)
+//        << std::endl;
         
         bWasRecorded = true;
     }

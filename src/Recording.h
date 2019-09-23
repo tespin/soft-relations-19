@@ -50,7 +50,11 @@ class Recording {
         void endRecording();
         void replay();
         void displayCurrent();
-        
+    
+        ofPolyline getCurrentReplayFrame() const {
+            return currentReplayFrame;
+        }
+    
         float getStartTime() const {
             return startTime;
         }
