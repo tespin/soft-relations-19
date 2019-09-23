@@ -62,10 +62,25 @@ void Recording::replay(){
     std::map<float, ofPolyline>::iterator lowBound;
     lowBound = frames.lower_bound(currentReplayTime);
     
-    if (lowBound != frames.end()) currentFrame = lowBound->second;
+    if (lowBound != frames.end()) currentReplayFrame = lowBound->second;
     
     ofSetColor(255, 0, 255, 50);
     
+    ofBeginShape();
+    for (std::size_t i = 0; i < currentReplayFrame.size(); i++)
+    {
+        ofVertex(currentReplayFrame[i]);
+    }
+    ofEndShape();
+}
+
+void Recording::displayCurrent(){
+    std::map<float, ofPolyline>::reverse_iterator iter;
+    iter = frames.rbegin();
+    
+    if (iter != frames.rend()) currentFrame = iter->second;
+    
+    ofSetColor(255, 142, 120, 50);
     ofBeginShape();
     for (std::size_t i = 0; i < currentFrame.size(); i++)
     {
@@ -73,3 +88,19 @@ void Recording::replay(){
     }
     ofEndShape();
 }
+
+//void Recording::displayCurrent(){
+//    std::map<float, ofPolyline>::iterator iter;
+//    iter = frames.lower_bound(ofGetElapsedTimef());
+//    
+//    if (iter != frames.end()) currentFrame = iter->second;
+//    
+//    ofSetColor(255, 142, 120, 50);
+//    ofBeginShape();
+//    for (std::size_t i = 0; i < currentFrame.size(); i++)
+//    {
+//        ofVertex(currentFrame[i]);
+//    }
+//    ofEndShape();
+//}
+

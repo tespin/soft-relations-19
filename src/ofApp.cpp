@@ -47,7 +47,8 @@ void ofApp::draw(){
     
     for (Recording &recording: recordings)
     {
-        if (recording.wasRecorded()) recording.replay();
+        if (recording.isRecording()) recording.displayCurrent();
+        else if (recording.wasRecorded()) recording.replay();
     }
 }
 
