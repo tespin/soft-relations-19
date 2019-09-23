@@ -8,9 +8,6 @@ void ofApp::setup(){
     
     setupGui();
     
-//    tracker.setPersistence(persistence);
-//    tracker.setMaximumDistance(maxDistance);
-    
     bNeedsUpdate = false;
     currentClipperType = ClipperLib::ctIntersection;
 }
@@ -37,57 +34,6 @@ void ofApp::update(){
             recording.checkStatus(tracker);
             recording.update();
         }
-//        endRecording();
-//        addNewRecording();
-//        assignPolyType();
-//        record();
-        
-//        for (Recording &recording: recordings)
-//        {
-//            unsigned int _label = recording.label;
-//
-//            for (std::size_t i = 0; i < contourFinder.size(); i++)
-//            {
-//                unsigned int contourLabel = contourFinder.getLabel(i);
-//
-//                if (_label == contourLabel) recording.frame = contourFinder.getPolyline(i);
-//            }
-//
-//            if (recording.bIsRecording)
-//            {
-//                record(recording, _label);
-//            }
-//        }
-        
-    }
-    
-    
-    
-//    updateClipper();
-    
-//    for (Recording &recording: recordings)
-//    {
-//        if (!recording.bIsRecording)
-//        {
-//            std::cout << "Recording " + std::to_string(recording.label) + " is no longer recording." << std::endl;
-//        }
-//    }
-    if (recordings.size() % 5 == 0)
-    {
-        for (Recording &recording: recordings)
-        {
-//            std::cout << recording.getStartTime() << std::endl;
-        }
-//        std::cout << "size: " + std::to_string(recordings.size()) << std::endl;
-    }
-    
-//    std::cout << recordings.size() << std::endl;
-    
-    if (recordings.size() != 0)
-    {
-//        std::cout << recordings[0].frames.size() << std::endl;
-//        std::cout << recordings[0].bWasRecorded << std::endl;
-//        std::cout << recordings[0].startTime << std::endl;
     }
 }
 
@@ -97,37 +43,6 @@ void ofApp::draw(){
     ofSetColor(255);
 //    cam.draw(0, 0);
 //    thresh.draw(0, 0);
-    for (Recording &recording: recordings)
-    {
-        if (recording.wasRecorded()) recording.replay();
-    }
-//    displayLabelStatus();
-    
-//    for (Recording &recording: recordings)
-//    {
-//        if (recording.bWasRecorded) replay(recording);
-//    }
-    
-//    ofSetColor (210, 168, 210);
-//    contourFinder.draw();
-    
-//    drawSubjects();
-//    drawMasks();
-//    drawClips();
-    
-//    if (recordings.size() != 0)
-//    {
-//        ofSetColor(255, 0, 0);
-//        recordings[0].frame.draw();
-        
-//        ofBeginShape();
-//        for (std::size_t i = 0; i < recordings[0].frame.size(); i++)
-//        {
-//            ofVertex(recordings[0].frame[i]);
-//        }
-//        ofEndShape();
-//    }
-    
     gui.draw();
 }
 
@@ -242,58 +157,9 @@ void ofApp::initializeRecording(){
         if (iter != newLabels.end())
         {
             Recording recording{label};
-//            recording.setStartTime();
             recordings.push_back(recording);
         }
-        
-//        if (iter != newLabels.end())
-//        {
-//            Recording recording;
-//            recording.bIsRecording = true;
-//            recording.label = _label;
-//            recordings.push_back(recording);
-//        }
-        
-//        if (recordings.size() > 20)
-//        {
-//            recordings.pop_front();
-//        }
     }
-    
-//    std::vector<unsigned int> newLabels = tracker.getNewLabels();
-//
-//    for (std::size_t i = 0; i < contourFinder.size(); i++)
-//    {
-//        unsigned int label = contourFinder.getLabel(i);
-//
-//        std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), label);
-//    for (std::size_t i = 0; i < contourFinder.size(); i++)
-        //    {
-        //        unsigned int label = contourFinder.getLabel(i);
-        //
-        //        std::vector<unsigned int>::iterator iter = std::find(newLabels.begin(), newLabels.end(), label);
-        //
-        //        if (iter != newLabels.end())
-        //        {
-        //            Recording recording;
-        //            recording.bIsRecording = true;
-        //            recording.startTime = currentTime;
-        //            recording.label = label;
-        //
-        //            recordings.push_back(recording);
-        //        }
-        //    }
-//
-//        if (iter != newLabels.end())
-//        {
-//            Recording recording;
-//            recording.bIsRecording = true;
-//            recording.startTime = currentTime;
-//            recording.label = label;
-//
-//            recordings.push_back(recording);
-//        }
-//    }
 }
 
 void ofApp::updateRecording(){
@@ -307,83 +173,8 @@ void ofApp::updateRecording(){
             {
                 recording.record(contourFinder.getPolyline(i));
             }
-//            if (label == recording.getLabel()) recording.update(contourFinder.getPolyline(i));
         }
     }
-}
-
-void ofApp::endRecording(){
-//    std::vector<unsigned int> deadLabels = tracker.getDeadLabels();
-//
-//    for (std::size_t i = 0; i < contourFinder.size(); i++)
-//    {
-//        unsigned int _label = contourFinder.getLabel(i);
-//
-//        std::vector<unsigned int>::iterator iter = std::find (deadLabels.begin(), deadLabels.end(), _label);
-//
-//        if (iter != deadLabels.end())
-//        {
-//            if (recordings[i].label == _label)
-//            {
-//                recordings[i].bIsRecording = false;
-//
-//                std::cout << "Recording " + std::to_string(_label) + " has stopped" << std::endl;
-//            }
-//        }
-//    }
-}
-
-void ofApp::record(Recording recording, unsigned int label){
-//    recording.frames.insert(std::make_pair(currentTime, recording.frame));
-//
-//    std::vector<unsigned int> deadLabels = tracker.getDeadLabels();
-//
-//    std::vector<unsigned int>::iterator iter = std::find(deadLabels.begin(), deadLabels.end(), label);
-//
-//    if (iter != deadLabels.end())
-//    {
-//        recording.endTime = currentTime;
-//        recording.length = recording.endTime - recording.startTime;
-//        recording.bWasRecorded = true;
-//        recording.bIsRecording = false;
-//
-//        std::cout << "recording became dead" << std::endl;
-//    }
-//    else if (recording.frames.size() > 100)
-//    {
-//        recording.endTime = currentTime;
-//        recording.length = recording.endTime - recording.startTime;
-//        recording.bWasRecorded = true;
-//        recording.bIsRecording = false;
-//
-//        std::cout << "recording boundary passed" << std::endl;
-//    }
-}
-
-void ofApp::replay(Recording recording){
-//    if (recording.replayStartTime >= recording.startTime + recording.length)
-//    {
-//        recording.replayStartTime = currentTime;
-//    }
-//
-//    float replayTime = currentTime - recording.replayStartTime + recording.startTime;
-//
-//    std::map<float, ofPolyline>::iterator lowBound;
-//    lowBound = recording.frames.lower_bound(replayTime);
-//
-//    if (lowBound != recording.frames.end())
-//    {
-//        recording.currentFrame = lowBound->second;
-//    }
-//
-//    ofSetColor(210, 168, 210);
-//
-//    ofBeginShape();
-//    for (std::size_t i = 0; i < recording.currentFrame.size(); i++)
-//    {
-//        ofVertex(recording.currentFrame[i]);
-//    }
-//    ofEndShape();
 }
 
 void ofApp::displayLabelStatus(){
@@ -413,8 +204,7 @@ void ofApp::displayLabelStatus(){
         }
         
         ofSetColor(status);
-        test.draw();
-        
+        test.draw(); 
     }
         
 }
