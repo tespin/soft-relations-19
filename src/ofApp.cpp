@@ -44,6 +44,11 @@ void ofApp::draw(){
 //    cam.draw(0, 0);
 //    thresh.draw(0, 0);
     gui.draw();
+    
+    for (Recording &recording: recordings)
+    {
+        if (recording.wasRecorded()) recording.replay();
+    }
 }
 
 void ofApp::mousePressed(int x, int y, int button){

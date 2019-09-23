@@ -1,5 +1,5 @@
 //
-//  Recording.hpp
+//  Recording.h
 //  soft-relations
 //
 //  Created by Tristan Espinoza on 9/21/19.
