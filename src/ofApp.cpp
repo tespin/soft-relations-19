@@ -9,6 +9,7 @@ void ofApp::setup(){
     setupGui();
     
     bNeedsUpdate = false;
+    bCalibrating = false;
     currentClipperType = ClipperLib::ctIntersection;
 }
 
@@ -55,15 +56,27 @@ void ofApp::draw(){
     
     ofSetColor(255);
 //    cam.draw(0, 0);
-//    thresh.draw(0, 0);
-    gui.draw();
     
-    for (Recording &recording: recordings)
+    if (bCalibrating)
     {
-        if (recording.isRecording()) recording.displayCurrent();
-        else if (recording.wasRecorded()) recording.replay();
+        thresh.draw(0, 0);
+        
+        ofSetColor(255, 0, 0);
+        contourFinder.draw();
+    }
+    else
+    {
+        for (Recording &recording: recordings)
+        {
+            if (recording.isRecording()) recording.displayCurrent();
+            else if (recording.wasRecorded())
+            {
+                if (recording.getFrames().size() > 20) recording.replay();
+            }
+        }
     }
     
+    gui.draw();
 //    drawSubjects();
 //    drawMasks();
 //    drawClips();
@@ -73,6 +86,19 @@ void ofApp::mousePressed(int x, int y, int button){
 }
 
 void ofApp::mouseReleased(int x, int y, int button){
+}
+
+void ofApp::keyPressed(int key){
+    switch(key)
+    {
+        case 'c':
+            bCalibrating = !bCalibrating;
+            break;
+        case 'n':
+            recordings.clear();
+        default:
+            break;
+    }
 }
 
 void ofApp::setupGui(){
@@ -90,11 +116,15 @@ void ofApp::setupGui(){
 }
 
 void ofApp::thresholdInput(){
+    
     ofxCv::convertColor(cam, thresh, CV_RGB2GRAY);
     ofxCv::threshold(thresh, threshold);
     ofxCv::blur(thresh, thresh, blurLevel);
     ofxCv::erode(thresh, thresh, erodeIterations);
     ofxCv::dilate(thresh, thresh, dilateIterations);
+    
+//    if (bCalibrating) thresh.resize(640, 320);
+//    else {}
     
     thresh.update();
 }

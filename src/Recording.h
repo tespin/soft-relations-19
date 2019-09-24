@@ -27,8 +27,7 @@ class Recording {
         ofPolyline currentFrame;
         ofPolyline currentReplayFrame;
         std::map<float, ofPolyline> frames;
-        std::vector<ofPolyline> frameVector;
-    
+        
     public:
     
         Recording(unsigned int label)
@@ -53,6 +52,10 @@ class Recording {
         void displayCurrent();
         void updateReplayFrame();
         void updateCurrentFrame();
+    
+        std::map<float, ofPolyline> getFrames() const {
+            return frames;
+        }
     
         ofPolyline getCurrentFrame() const {
             return currentFrame;

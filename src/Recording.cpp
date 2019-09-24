@@ -8,7 +8,7 @@
 #include "Recording.h"
 
 void Recording::update(){
-    if (bIsDead || frames.size() > 199) endRecording();
+    if ((bIsDead) || frames.size() > 199) endRecording();
     
     updateReplayFrame();
     updateCurrentFrame();

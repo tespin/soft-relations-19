@@ -30,6 +30,7 @@ class ofApp : public ofBaseApp{
     
 		void mousePressed(int x, int y, int button);
 		void mouseReleased(int x, int y, int button);
+        void keyPressed(int key);
     
         ofVideoGrabber cam;
         ofxCv::ContourFinder contourFinder;
@@ -60,5 +61,6 @@ class ofApp : public ofBaseApp{
         std::deque<Recording> recordings;
     
         bool bNeedsUpdate;
+        bool bCalibrating;
     
 };
