@@ -26,7 +26,7 @@ void ofApp::update(){
         thresholdInput();
         findContours();
         
-        if (recordings.size() > 5) recordings.pop_front();
+        if (recordings.size() > 10) recordings.pop_front();
 //        std::cout << "Size: " + recordings.size() << std::endl;
         
         initializeRecording();
@@ -66,7 +66,7 @@ void ofApp::draw(){
     
 //    drawSubjects();
 //    drawMasks();
-//    drawClips();    
+//    drawClips();
 }
 
 void ofApp::mousePressed(int x, int y, int button){
@@ -119,7 +119,7 @@ void ofApp::updateClipper(){
 void ofApp::drawSubjects(){
     for (ofPolyline &subject: subjects)
     {
-        ofSetColor(255, 0, 0, 50);
+        ofSetColor(255, 0, 0, 10);
         ofBeginShape();
         for (std::size_t i = 0; i < subject.size(); i++)
         {
@@ -132,7 +132,7 @@ void ofApp::drawSubjects(){
 void ofApp::drawMasks(){
     for (ofPolyline &mask: masks)
     {
-        ofSetColor(0, 255, 0, 50);
+        ofSetColor(0, 255, 0, 10);
         ofBeginShape();
         for (std::size_t i = 0; i < mask.size(); i++)
         {
@@ -145,7 +145,7 @@ void ofApp::drawMasks(){
 void ofApp::drawClips(){
     for (ofPolyline &clip: clips)
     {
-        ofSetColor(126, 255, 182, 50);
+        ofSetColor(126, 255, 182, 75);
         ofBeginShape();
         for (std::size_t i = 0; i < clip.size(); i++)
         {

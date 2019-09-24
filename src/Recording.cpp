@@ -58,7 +58,7 @@ void Recording::endRecording(){
 }
 
 void Recording::replay(){
-    ofSetColor(255, 0, 255, 50);
+    ofSetColor(255, 0, 255, 75);
     
     ofBeginShape();
     for (std::size_t i = 0; i < currentReplayFrame.size(); i++)
@@ -69,7 +69,7 @@ void Recording::replay(){
 }
 
 void Recording::displayCurrent(){
-    ofSetColor(255, 142, 120, 50);
+    ofSetColor(255, 142, 120, 75);
     
     ofBeginShape();
     for (std::size_t i = 0; i < currentFrame.size(); i++)
