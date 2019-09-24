@@ -60,12 +60,18 @@ void ofApp::draw(){
     
     for (Recording &recording: recordings)
     {
+//        ofSetColor(255, 0, 0);
+//        recording.getCurrentFrame().draw();
         if (recording.isRecording()) recording.displayCurrent();
         else if (recording.wasRecorded()) recording.replay();
     }
     
+    
 //    drawSubjects();
 //    drawMasks();
+//    drawClips();
+    
+//    if (recordings.size() != 0) recordings[0].getCurrentReplayFrame().draw();
 }
 
 void ofApp::mousePressed(int x, int y, int button){
@@ -109,7 +115,7 @@ void ofApp::findContours(){
 void ofApp::updateClipper(){
     clips.clear();
     clipper.Clear();
-//    clipper.addPolylines(subjects, ClipperLib::ptSubject);
+    clipper.addPolylines(subjects, ClipperLib::ptSubject);
     clipper.addPolylines(masks, ClipperLib::ptClip);
     
     
@@ -149,7 +155,7 @@ void ofApp::drawClips(){
     for (ofPolyline &clip: clips)
     {
 //        ofSetColor(182, 255, 143, 100);
-        ofSetColor(0, 0, 255, 50);
+        ofSetColor(126, 255, 182, 50);
         ofBeginShape();
         for (std::size_t i = 0; i < clip.size(); i++)
         {
@@ -170,7 +176,15 @@ void ofApp::assignPolyType(){
     
     for (Recording &recording: recordings)
     {
-        subjects.push_back(recording.getCurrentReplayFrame());
+        subjects.push_back(recording.getCurrentFrame());
+        
+//        std::map<float, ofPolyline>::reverse_iterator riter;
+//        
+//        riter = recording.getFrames().rbegin();
+//        
+//        if (riter != recording.getFrames().rend()) subjects.push_back(riter->second);
+        
+//        subjects.push_back(recording.getCurrentReplayFrame());
     }
     
     std::cout << "masks: " + std::to_string(masks.size()) << std::endl;

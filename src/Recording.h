@@ -27,6 +27,7 @@ class Recording {
         ofPolyline currentFrame;
         ofPolyline currentReplayFrame;
         std::map<float, ofPolyline> frames;
+        std::vector<ofPolyline> frameVector;
     
     public:
     
@@ -51,8 +52,8 @@ class Recording {
         void replay();
         void displayCurrent();
     
-        ofPolyline getCurrentReplayFrame() const {
-            return currentReplayFrame;
+        ofPolyline getCurrentFrame() const {
+            return currentFrame;
         }
     
         float getStartTime() const {
