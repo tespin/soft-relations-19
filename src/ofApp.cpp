@@ -60,18 +60,13 @@ void ofApp::draw(){
     
     for (Recording &recording: recordings)
     {
-//        ofSetColor(255, 0, 0);
-//        recording.getCurrentFrame().draw();
         if (recording.isRecording()) recording.displayCurrent();
         else if (recording.wasRecorded()) recording.replay();
     }
     
-    
 //    drawSubjects();
 //    drawMasks();
-//    drawClips();
-    
-//    if (recordings.size() != 0) recordings[0].getCurrentReplayFrame().draw();
+//    drawClips();    
 }
 
 void ofApp::mousePressed(int x, int y, int button){
@@ -118,7 +113,6 @@ void ofApp::updateClipper(){
     clipper.addPolylines(subjects, ClipperLib::ptSubject);
     clipper.addPolylines(masks, ClipperLib::ptClip);
     
-    
     clips = clipper.getClipped(currentClipperType);
 }
 
@@ -138,9 +132,6 @@ void ofApp::drawSubjects(){
 void ofApp::drawMasks(){
     for (ofPolyline &mask: masks)
     {
-//        mask.draw();
-        
-//        ofSetColor(210, 168, 210, 50);
         ofSetColor(0, 255, 0, 50);
         ofBeginShape();
         for (std::size_t i = 0; i < mask.size(); i++)
@@ -154,7 +145,6 @@ void ofApp::drawMasks(){
 void ofApp::drawClips(){
     for (ofPolyline &clip: clips)
     {
-//        ofSetColor(182, 255, 143, 100);
         ofSetColor(126, 255, 182, 50);
         ofBeginShape();
         for (std::size_t i = 0; i < clip.size(); i++)
@@ -177,18 +167,10 @@ void ofApp::assignPolyType(){
     for (Recording &recording: recordings)
     {
         subjects.push_back(recording.getCurrentFrame());
-        
-//        std::map<float, ofPolyline>::reverse_iterator riter;
-//        
-//        riter = recording.getFrames().rbegin();
-//        
-//        if (riter != recording.getFrames().rend()) subjects.push_back(riter->second);
-        
-//        subjects.push_back(recording.getCurrentReplayFrame());
     }
     
-    std::cout << "masks: " + std::to_string(masks.size()) << std::endl;
-    std::cout << "subjects: " + std::to_string(subjects.size()) << std::endl;
+//    std::cout << "masks: " + std::to_string(masks.size()) << std::endl;
+//    std::cout << "subjects: " + std::to_string(subjects.size()) << std::endl;
     
     bNeedsUpdate = true;
 }

@@ -51,6 +51,8 @@ class Recording {
         void endRecording();
         void replay();
         void displayCurrent();
+        void updateReplayFrame();
+        void updateCurrentFrame();
     
         ofPolyline getCurrentFrame() const {
             return currentFrame;
