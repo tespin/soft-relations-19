@@ -76,7 +76,7 @@ void ofApp::update(){
 //    }
 //    maskFbo.end();
 //    maskFbo.draw(0, 0);
-//    
+//
 //    faceFbo.begin();
 //    ofClear(0, 0, 0 , 0);
 //    cam.getTexture().setAlphaMask(maskFbo.getTexture());
