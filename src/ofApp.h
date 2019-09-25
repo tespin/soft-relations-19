@@ -5,23 +5,12 @@
 #include "ofxClipper.h"
 #include "ofxGui.h"
 #include "ofxOpenCv.h"
+#include "Recording.h"
+//#include "ofxKinectForWindows2.h"
 
 class ofApp : public ofBaseApp{
 
 	public:
-    
-        struct Recording
-        {
-            float startTime;
-            float endTime;
-            float replayStartTime;
-            float length;
-            unsigned int label;
-            ofPolyline frame;
-            ofPolyline currentFrame;;
-            std::map<float, ofPolyline> frames;
-            bool bIsRecording;
-        };
     
 		void setup();
 		void update();
@@ -32,9 +21,10 @@ class ofApp : public ofBaseApp{
         void findContours();
         void updateClipper();
         void assignPolyType();
-        void addNewRecording();
-        void record();
-        void replay();
+        void initializeRecording();
+        void updateRecording();
+        void displayLabelStatus();
+        void addPaths();
     
         void drawSubjects();
         void drawMasks();
@@ -42,12 +32,15 @@ class ofApp : public ofBaseApp{
     
 		void mousePressed(int x, int y, int button);
 		void mouseReleased(int x, int y, int button);
+        void keyPressed(int key);
     
         ofVideoGrabber cam;
         ofxCv::ContourFinder contourFinder;
         ofxCv::RectTracker tracker;
     
         ofImage thresh;
+
+//        ofxKFW2::Device kinect;
     
         ofxPanel gui;
         ofParameter<float> blurLevel;
@@ -58,9 +51,14 @@ class ofApp : public ofBaseApp{
         ofParameter<float> contourMinArea;
         ofParameter<float> contourMaxArea;
         ofParameter<bool> findHoles;
+        ofParameter<unsigned int> persistence;
+        ofParameter<unsigned int> maxDistance;
+    
+        ofFbo maskFbo;
+        ofFbo faceFbo;
+        std::vector<ofPath> paths;
     
         ofx::Clipper clipper;
-        
         ClipperLib::ClipType currentClipperType;
         
         std::vector<ofPolyline> clips;
@@ -68,15 +66,9 @@ class ofApp : public ofBaseApp{
         std::vector<ofPolyline> masks;
     
         float currentTime;
-//        float replayTime;
-//        float recordingStartTime;
-//        float recordingEndTime;
-//        float replayStartTime;
-    
-//        std::vector<ofPolyline> recordings;
-        std::vector<Recording> recordings;
-//        std::map<float, ofPolyline> frames;
+        std::deque<Recording> recordings;
     
         bool bNeedsUpdate;
+        bool bCalibrating;
     
 };

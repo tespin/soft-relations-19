@@ -2,6 +2,9 @@ docs/html
 docs/tagfile.xml
 docs/*.tag
 
+# visual studio
+*.vs
+
 # Font stuff
 *.ttf
 *.otf
