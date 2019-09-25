@@ -6,7 +6,7 @@
 #include "ofxGui.h"
 #include "ofxOpenCv.h"
 #include "Recording.h"
-//#include "ofxKinectForWindows2.h"
+#include "ofxKinectForWindows2.h"
 
 class ofApp : public ofBaseApp{
 
@@ -40,7 +40,7 @@ class ofApp : public ofBaseApp{
     
         ofImage thresh;
 
-//        ofxKFW2::Device kinect;
+        ofxKFW2::Device kinect;
     
         ofxPanel gui;
         ofParameter<float> blurLevel;

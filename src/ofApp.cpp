@@ -6,8 +6,8 @@ void ofApp::setup(){
     cam.setDeviceID(0);
     cam.setup(ofGetWidth(), ofGetHeight());
 
-//    kinect.open();
-//    kinect.initColorSource();
+    kinect.open();
+    kinect.initColorSource();
     
     setupGui();
     
@@ -27,7 +27,7 @@ void ofApp::update(){
     tracker = contourFinder.getTracker();
     
     cam.update();
-//    kinect.update();
+    kinect.update();
     
     if (cam.isFrameNew())
     {
