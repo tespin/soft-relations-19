@@ -3,7 +3,7 @@
 void ofApp::setup(){
     ofSetBackgroundColor(255);
     ofEnableAlphaBlending();
-//    cam.setDeviceID(0);
+    cam.setDeviceID(0);
     cam.setup(ofGetWidth(), ofGetHeight());
 
 //    kinect.open();
