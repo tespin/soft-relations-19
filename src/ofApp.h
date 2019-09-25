@@ -23,6 +23,7 @@ class ofApp : public ofBaseApp{
         void initializeRecording();
         void updateRecording();
         void displayLabelStatus();
+        void addPaths();
     
         void drawSubjects();
         void drawMasks();
@@ -49,6 +50,10 @@ class ofApp : public ofBaseApp{
         ofParameter<bool> findHoles;
         ofParameter<unsigned int> persistence;
         ofParameter<unsigned int> maxDistance;
+    
+        ofFbo maskFbo;
+        ofFbo faceFbo;
+        std::vector<ofPath> paths;
     
         ofx::Clipper clipper;
         ClipperLib::ClipType currentClipperType;

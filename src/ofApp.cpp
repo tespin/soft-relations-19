@@ -11,6 +11,9 @@ void ofApp::setup(){
     bNeedsUpdate = false;
     bCalibrating = false;
     currentClipperType = ClipperLib::ctIntersection;
+    
+    maskFbo.allocate(1280, 720);
+    faceFbo.allocate(1280, 720);
 }
 
 void ofApp::update(){
@@ -26,6 +29,21 @@ void ofApp::update(){
     {
         thresholdInput();
         findContours();
+        addPaths();
+        
+//        maskFbo.begin();
+//        ofClear(0, 0, 0, 0);
+//        for (auto &path: paths)
+//        {
+//            path.draw();
+//        }
+//        maskFbo.end();
+//
+//        faceFbo.begin();
+//        ofClear(0, 0, 0 , 0);
+//        cam.getTexture().setAlphaMask(maskFbo.getTexture());
+//        cam.draw(0, 0);
+//        faceFbo.end();
         
         if (recordings.size() > 10) recordings.pop_front();
 //        std::cout << "Size: " + recordings.size() << std::endl;
@@ -49,6 +67,21 @@ void ofApp::update(){
         bNeedsUpdate = false;
 //        updateClipper();
     }
+    
+//    maskFbo.begin();
+//    ofClear(0, 0, 0, 0);
+//    for (auto &path: paths)
+//    {
+//        path.draw();
+//    }
+//    maskFbo.end();
+//    maskFbo.draw(0, 0);
+//    
+//    faceFbo.begin();
+//    ofClear(0, 0, 0 , 0);
+//    cam.getTexture().setAlphaMask(maskFbo.getTexture());
+//    cam.draw(0, 0);
+//    faceFbo.end();
 }
 
 void ofApp::draw(){
@@ -56,7 +89,7 @@ void ofApp::draw(){
     
     ofSetColor(255);
 //    cam.draw(0, 0);
-    
+
     if (bCalibrating)
     {
         thresh.draw(0, 0);
@@ -75,6 +108,8 @@ void ofApp::draw(){
             }
         }
     }
+    
+//    faceFbo.draw(0, 0);
     
     gui.draw();
 //    drawSubjects();
@@ -233,6 +268,27 @@ void ofApp::updateRecording(){
                 recording.record(contourFinder.getPolyline(i));
             }
         }
+    }
+}
+
+void ofApp::addPaths(){
+    paths.clear();
+    for (std::size_t i = 0; i < contourFinder.size(); i++)
+    {
+        ofPath path = ofPath();
+        ofPolyline poly = contourFinder.getPolyline(i);
+        for (std::size_t i = 0; i < poly.size(); i++)
+        {
+            if (i == 0)
+            {
+                path.newSubPath();
+                path.moveTo(poly[i]);
+            }
+            else path.lineTo(poly[i]);
+        }
+        path.close();
+        paths.push_back(path);
+
     }
 }
 
