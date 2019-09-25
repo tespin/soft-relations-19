@@ -7,12 +7,11 @@
 
 #include "Recording.h"
 
-void Recording::start(){
-    
-}
-
 void Recording::update(){
-    if (bIsDead || frames.size() > 199) endRecording();
+    if ((bIsDead) || frames.size() > 199) endRecording();
+    
+    updateReplayFrame();
+    updateCurrentFrame();
 }
 
 void Recording::checkStatus(ofxCv::RectTracker tracker){
@@ -22,7 +21,7 @@ void Recording::checkStatus(ofxCv::RectTracker tracker){
     
     if (iter != deadLabels.end())
     {
-        std::cout << "Recording: " + std::to_string(label) + "is dead." << std::endl;
+//        std::cout << "Recording: " + std::to_string(label) + " is dead." << std::endl;
         bIsDead = true;
     }
 }
@@ -30,12 +29,12 @@ void Recording::checkStatus(ofxCv::RectTracker tracker){
 void Recording::record(ofPolyline &frame){
     frames.insert(std::map<float, ofPolyline>::value_type(ofGetElapsedTimef(), frame));
     
-    std::cout <<
-        "Recording: "
-        + std::to_string(label)
-        + "\nFrames: "
-        + std::to_string(frames.size())
-    << std::endl;    
+//    std::cout <<
+//        "Recording: "
+//        + std::to_string(label)
+//        + "\nFrames: "
+//        + std::to_string(frames.size())
+//    << std::endl;
 }
 
 void Recording::endRecording(){
@@ -46,29 +45,31 @@ void Recording::endRecording(){
         length = endTime - startTime;
         replayStartTime = ofGetElapsedTimef();
         
-        std::cout <<
-            "Recording " + std::to_string(label)
-            + " ended with " + std::to_string(frames.size()) + " frames. "
-            + "\nStart: " + std::to_string(startTime)
-            + "\nEnd: " + std::to_string(endTime)
-            + "\nLength: " + std::to_string(length)
-        << std::endl;
+//        std::cout <<
+//            "Recording " + std::to_string(label)
+//            + " ended with " + std::to_string(frames.size()) + " frames. "
+//            + "\nStart: " + std::to_string(startTime)
+//            + "\nEnd: " + std::to_string(endTime)
+//            + "\nLength: " + std::to_string(length)
+//        << std::endl;
         
         bWasRecorded = true;
     }
 }
 
 void Recording::replay(){
-    if (currentReplayTime >= startTime + length) replayStartTime = ofGetElapsedTimef();
+    ofSetColor(255, 0, 255, 75);
     
-    currentReplayTime = ofGetElapsedTimef() - replayStartTime + startTime;
-    
-    std::map<float, ofPolyline>::iterator lowBound;
-    lowBound = frames.lower_bound(currentReplayTime);
-    
-    if (lowBound != frames.end()) currentFrame = lowBound->second;
-    
-    ofSetColor(255, 0, 255, 50);
+    ofBeginShape();
+    for (std::size_t i = 0; i < currentReplayFrame.size(); i++)
+    {
+        ofVertex(currentReplayFrame[i]);
+    }
+    ofEndShape();
+}
+
+void Recording::displayCurrent(){
+    ofSetColor(255, 142, 120, 75);
     
     ofBeginShape();
     for (std::size_t i = 0; i < currentFrame.size(); i++)
@@ -76,4 +77,22 @@ void Recording::replay(){
         ofVertex(currentFrame[i]);
     }
     ofEndShape();
+}
+
+void Recording::updateReplayFrame(){
+    if (currentReplayTime >= startTime + length) replayStartTime = ofGetElapsedTimef();
+    
+    currentReplayTime = ofGetElapsedTimef() - replayStartTime + startTime;
+    
+    std::map<float, ofPolyline>::iterator lowBound;
+    lowBound = frames.lower_bound(currentReplayTime);
+    
+    if (lowBound != frames.end()) currentReplayFrame = lowBound->second;
+}
+
+void Recording::updateCurrentFrame(){
+    std::map<float, ofPolyline>::reverse_iterator iter;
+    iter = frames.rbegin();
+    
+    if (iter != frames.rend()) currentFrame = iter->second;
 }

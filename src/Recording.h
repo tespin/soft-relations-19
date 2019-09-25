@@ -1,5 +1,5 @@
 //
-//  Recording.hpp
+//  Recording.h
 //  soft-relations
 //
 //  Created by Tristan Espinoza on 9/21/19.
@@ -25,8 +25,9 @@ class Recording {
         float length;
     
         ofPolyline currentFrame;
+        ofPolyline currentReplayFrame;
         std::map<float, ofPolyline> frames;
-    
+        
     public:
     
         Recording(unsigned int label)
@@ -48,7 +49,17 @@ class Recording {
         void record(ofPolyline &frame);
         void endRecording();
         void replay();
-//        void record();
+        void displayCurrent();
+        void updateReplayFrame();
+        void updateCurrentFrame();
+    
+        std::map<float, ofPolyline> getFrames() const {
+            return frames;
+        }
+    
+        ofPolyline getCurrentFrame() const {
+            return currentFrame;
+        }
     
         float getStartTime() const {
             return startTime;
@@ -65,16 +76,4 @@ class Recording {
         bool wasRecorded() const {
             return bWasRecorded;
         }
-
-//        bool bIsRecording;
-//        bool bWasRecorded;
-    //    float endTime;
-    //    float replayStartTime;
-    //    float length;
-    //    unsigned int label;
-    //    ofPolyline frame;
-    //    ofPolyline currentFrame;;
-    //    std::map<float, ofPolyline> frames;
-    //    bool bIsRecording;
-    //    bool bWasRecorded;
 };
