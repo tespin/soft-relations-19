@@ -8,6 +8,7 @@ void ofApp::setup(){
 
     kinect.open();
     kinect.initColorSource();
+	kinect.initBodyIndexSource();
     
     setupGui();
     
@@ -94,13 +95,15 @@ void ofApp::draw(){
     
     ofSetColor(255);
 //    cam.draw(0, 0);
+	kinect.getBodyIndexSource()->draw(0, 0, 1280, 720);
+	contourFinder.draw();
 
     if (bCalibrating)
     {
         thresh.draw(0, 0);
         
         ofSetColor(255, 0, 0);
-        contourFinder.draw();
+        //contourFinder.draw();
     }
     else
     {
@@ -177,7 +180,8 @@ void ofApp::findContours(){
     contourFinder.setMaxAreaRadius(contourMaxArea);
     contourFinder.setFindHoles(findHoles);
     contourFinder.setInvert(invert);
-    contourFinder.findContours(thresh);
+    //contourFinder.findContours(thresh);
+	contourFinder.findContours(kinect.getBodyIndexSource()->getPixels());
 }
 
 void ofApp::updateClipper(){
