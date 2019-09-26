@@ -157,10 +157,10 @@ void ofApp::setupGui(){
 
 void ofApp::thresholdInput(){
     
-	ofPixels &pixels = kinect.getColorSource()->getPixels();
-	kinectImg.setFromPixels(pixels);
+	//ofPixels &pixels = kinect.getColorSource()->getPixels();
+	//kinectImg.setFromPixels(pixels);
 
-    ofxCv::convertColor(kinectImg, thresh, CV_RGB2GRAY);
+    ofxCv::convertColor(cam, thresh, CV_RGB2GRAY);
     ofxCv::threshold(thresh, threshold);
     ofxCv::blur(thresh, thresh, blurLevel);
     ofxCv::erode(thresh, thresh, erodeIterations);
