@@ -41,6 +41,7 @@ class ofApp : public ofBaseApp{
         ofImage thresh;
 
         ofxKFW2::Device kinect;
+		ofImage kinectImg;
     
         ofxPanel gui;
         ofParameter<float> blurLevel;

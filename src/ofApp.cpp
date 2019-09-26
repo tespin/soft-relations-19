@@ -17,6 +17,7 @@ void ofApp::setup(){
     
     maskFbo.allocate(1280, 720);
     faceFbo.allocate(1280, 720);
+	kinectImg.allocate(1280, 720, OF_IMAGE_COLOR);
 }
 
 void ofApp::update(){
@@ -156,7 +157,10 @@ void ofApp::setupGui(){
 
 void ofApp::thresholdInput(){
     
-    ofxCv::convertColor(cam, thresh, CV_RGB2GRAY);
+	ofPixels &pixels = kinect.getColorSource()->getPixels();
+	kinectImg.setFromPixels(pixels);
+
+    ofxCv::convertColor(kinectImg, thresh, CV_RGB2GRAY);
     ofxCv::threshold(thresh, threshold);
     ofxCv::blur(thresh, thresh, blurLevel);
     ofxCv::erode(thresh, thresh, erodeIterations);
