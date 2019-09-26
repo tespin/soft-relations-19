@@ -18,7 +18,7 @@ void ofApp::setup(){
     
     maskFbo.allocate(1280, 720);
     faceFbo.allocate(1280, 720);
-	kinectImg.allocate(1280, 720, OF_IMAGE_COLOR);
+	kinectImg.allocate(640, 480, OF_IMAGE_GRAYSCALE);
 }
 
 void ofApp::update(){
@@ -181,7 +181,10 @@ void ofApp::findContours(){
     contourFinder.setFindHoles(findHoles);
     contourFinder.setInvert(invert);
     //contourFinder.findContours(thresh);
-	contourFinder.findContours(kinect.getBodyIndexSource()->getPixels());
+	kinectImg.setFromPixels(kinect.getBodyIndexSource()->getPixels());
+	kinectImg.resize(1280, 720);
+	contourFinder.findContours(kinectImg);
+	//contourFinder.findContours(kinect.getBodyIndexSource()->getPixels());
 }
 
 void ofApp::updateClipper(){
