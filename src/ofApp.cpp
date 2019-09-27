@@ -31,11 +31,11 @@ void ofApp::update(){
     cam.update();
     kinect.update();
     
-    if (cam.isFrameNew())
+    if (kinect.isFrameNew())
     {
         thresholdInput();
         findContours();
-        addPaths();
+        //addPaths();
         
 //        maskFbo.begin();
 //        ofClear(0, 0, 0, 0);
@@ -94,16 +94,14 @@ void ofApp::draw(){
     ofSetBackgroundColor(255);
     
     ofSetColor(255);
-//    cam.draw(0, 0);
-	kinect.getBodyIndexSource()->draw(0, 0, 1280, 720);
 	contourFinder.draw();
 
     if (bCalibrating)
     {
-        thresh.draw(0, 0);
+		kinect.getBodyIndexSource()->draw(0, 0, 1280, 720);
         
         ofSetColor(255, 0, 0);
-        //contourFinder.draw();
+        contourFinder.draw();
     }
     else
     {
@@ -122,7 +120,7 @@ void ofApp::draw(){
     gui.draw();
 //    drawSubjects();
 //    drawMasks();
-//    drawClips();
+    //drawClips();
 }
 
 void ofApp::mousePressed(int x, int y, int button){
@@ -169,9 +167,6 @@ void ofApp::thresholdInput(){
     ofxCv::erode(thresh, thresh, erodeIterations);
     ofxCv::dilate(thresh, thresh, dilateIterations);
     
-//    if (bCalibrating) thresh.resize(640, 320);
-//    else {}
-    
     thresh.update();
 }
 
@@ -180,11 +175,10 @@ void ofApp::findContours(){
     contourFinder.setMaxAreaRadius(contourMaxArea);
     contourFinder.setFindHoles(findHoles);
     contourFinder.setInvert(invert);
-    //contourFinder.findContours(thresh);
+
 	kinectImg.setFromPixels(kinect.getBodyIndexSource()->getPixels());
 	kinectImg.resize(1280, 720);
 	contourFinder.findContours(kinectImg);
-	//contourFinder.findContours(kinect.getBodyIndexSource()->getPixels());
 }
 
 void ofApp::updateClipper(){
@@ -193,7 +187,7 @@ void ofApp::updateClipper(){
     clipper.addPolylines(subjects, ClipperLib::ptSubject);
     clipper.addPolylines(masks, ClipperLib::ptClip);
     
-    clips = clipper.getClipped(currentClipperType);
+	if (subjects.size() != 0 && masks.size() != 0) clips = clipper.getClipped(currentClipperType);
 }
 
 void ofApp::drawSubjects(){
@@ -223,16 +217,19 @@ void ofApp::drawMasks(){
 }
 
 void ofApp::drawClips(){
-    for (ofPolyline &clip: clips)
-    {
-        ofSetColor(126, 255, 182, 75);
-        ofBeginShape();
-        for (std::size_t i = 0; i < clip.size(); i++)
-        {
-            ofVertex(clip[i]);
-        }
-        ofEndShape();
-    }
+	if (clips.size() != 0)
+	{
+		for (ofPolyline& clip : clips)
+		{
+			ofSetColor(126, 255, 182, 75);
+			ofBeginShape();
+			for (std::size_t i = 0; i < clip.size(); i++)
+			{
+				ofVertex(clip[i]);
+			}
+			ofEndShape();
+		}
+	}
 }
 
 void ofApp::assignPolyType(){
@@ -246,7 +243,11 @@ void ofApp::assignPolyType(){
     
     for (Recording &recording: recordings)
     {
-        subjects.push_back(recording.getCurrentFrame());
+		subjects.push_back(recording.getCurrentFrame());
+		/*std::shared_ptr<ofPolyline> poly = std::make_shared<ofPolyline>();
+		poly = recording.getCurrentReplayFrame();
+		subjects.push_back(poly);*/
+		//if (recording.getFrames().size() != 0) subjects.push_back(recording.getCurrentReplayFrame());
     }
     
 //    std::cout << "masks: " + std::to_string(masks.size()) << std::endl;

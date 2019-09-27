@@ -56,7 +56,11 @@ class Recording {
         std::map<float, ofPolyline> getFrames() const {
             return frames;
         }
-    
+
+		ofPolyline getCurrentReplayFrame() const {
+			return currentReplayFrame;
+		}
+
         ofPolyline getCurrentFrame() const {
             return currentFrame;
         }

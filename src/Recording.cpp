@@ -8,10 +8,10 @@
 #include "Recording.h"
 
 void Recording::update(){
+	updateReplayFrame();
+	updateCurrentFrame();
+
     if ((bIsDead) || frames.size() > 199) endRecording();
-    
-    updateReplayFrame();
-    updateCurrentFrame();
 }
 
 void Recording::checkStatus(ofxCv::RectTracker tracker){
