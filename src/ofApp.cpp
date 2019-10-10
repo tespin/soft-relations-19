@@ -13,7 +13,7 @@ void ofApp::setup(){
     setupGui();
     
     bNeedsUpdate = false;
-    bCalibrating = false;
+    bCalibrating = true;
     currentClipperType = ClipperLib::ctIntersection;
     
     maskFbo.allocate(1280, 720);
@@ -61,6 +61,8 @@ void ofApp::update(){
         {
             recording.checkStatus(tracker);
             recording.update();
+
+			test = recording.getCurrentReplayFrame();
         }
         
         assignPolyType();
@@ -69,6 +71,7 @@ void ofApp::update(){
         {
             updateClipper();
         }
+
         
         bNeedsUpdate = false;
 //        updateClipper();
@@ -98,10 +101,11 @@ void ofApp::draw(){
 
     if (bCalibrating)
     {
-		kinect.getBodyIndexSource()->draw(0, 0, 1280, 720);
-        
+		//kinect.getBodyIndexSource()->draw(0, 0, 1280, 720);
         ofSetColor(255, 0, 0);
-        contourFinder.draw();
+        //contourFinder.draw();
+		//test.draw();
+		drawClips();
     }
     else
     {
@@ -184,8 +188,8 @@ void ofApp::findContours(){
 void ofApp::updateClipper(){
     clips.clear();
     clipper.Clear();
-    clipper.addPolylines(subjects, ClipperLib::ptSubject);
     clipper.addPolylines(masks, ClipperLib::ptClip);
+	clipper.addPolylines(subjects, ClipperLib::ptSubject);
     
 	if (subjects.size() != 0 && masks.size() != 0) clips = clipper.getClipped(currentClipperType);
 }
@@ -222,6 +226,7 @@ void ofApp::drawClips(){
 		for (ofPolyline& clip : clips)
 		{
 			ofSetColor(126, 255, 182, 75);
+			ofFill();
 			ofBeginShape();
 			for (std::size_t i = 0; i < clip.size(); i++)
 			{
@@ -241,14 +246,32 @@ void ofApp::assignPolyType(){
         masks.push_back(polyline);
     }
     
-    for (Recording &recording: recordings)
-    {
-		subjects.push_back(recording.getCurrentFrame());
-		/*std::shared_ptr<ofPolyline> poly = std::make_shared<ofPolyline>();
-		poly = recording.getCurrentReplayFrame();
-		subjects.push_back(poly);*/
-		//if (recording.getFrames().size() != 0) subjects.push_back(recording.getCurrentReplayFrame());
-    }
+	if (recordings.size() != 0)
+	{
+		for (Recording recording : recordings)
+		{
+			ofPolyline bloop;
+			bloop = recording.getCurrentReplayFrame();
+			bloop.close();
+			subjects.push_back(bloop);
+			std::cout << subjects.size() << std::endl;
+			/*std::shared_ptr<ofPolyline> poly = std::make_shared<ofPolyline>();
+			poly = recording.getCurrentReplayFrame();
+			subjects.push_back(poly);*/
+			//if (recording.getFrames().size() != 0) subjects.push_back(recording.getCurrentReplayFrame());
+		}
+	}
+  //  for (Recording &recording: recordings)
+  //  {
+		//ofPolyline bloop;
+		//bloop = recording.getCurrentReplayFrame();
+		//subjects.push_back(bloop);
+		//std::cout << subjects.size() << std::endl;
+		//td::shared_ptr<ofPolyline> poly = std::make_shared<ofPolyline>();
+		//poly = recording.getCurrentReplayFrame();
+		//subjects.push_back(poly);*/
+		////if (recording.getFrames().size() != 0) subjects.push_back(recording.getCurrentReplayFrame());
+  //  }
     
 //    std::cout << "masks: " + std::to_string(masks.size()) << std::endl;
 //    std::cout << "subjects: " + std::to_string(subjects.size()) << std::endl;

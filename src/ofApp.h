@@ -39,6 +39,7 @@ class ofApp : public ofBaseApp{
         ofxCv::RectTracker tracker;
     
         ofImage thresh;
+		ofPolyline test;
 
         ofxKFW2::Device kinect;
 		ofImage kinectImg;
