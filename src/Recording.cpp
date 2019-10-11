@@ -84,11 +84,14 @@ void Recording::updateReplayFrame(){
     if (currentReplayTime >= startTime + length) replayStartTime = ofGetElapsedTimef();
     
     currentReplayTime = ofGetElapsedTimef() - replayStartTime + startTime;
+
+	percentage = ((replayStartTime - currentReplayTime) / length) * 100;
     
     std::map<float, ofPolyline>::iterator lowBound;
     lowBound = frames.lower_bound(currentReplayTime);
     
     if (lowBound != frames.end()) currentReplayFrame = lowBound->second;
+	std::cout << percentage << std::endl;
 }
 
 void Recording::updateCurrentFrame(){

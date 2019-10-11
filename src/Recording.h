@@ -23,6 +23,7 @@ class Recording {
         float currentReplayTime;
         float replayStartTime;
         float length;
+		float percentage;
     
         ofPolyline currentFrame;
         ofPolyline currentReplayFrame;
@@ -52,6 +53,7 @@ class Recording {
         void displayCurrent();
         void updateReplayFrame();
         void updateCurrentFrame();
+		void calculatePercentage();
     
         std::map<float, ofPolyline> getFrames() const {
             return frames;
@@ -68,7 +70,11 @@ class Recording {
         float getStartTime() const {
             return startTime;
         }
-    
+
+		float getPercentage() const {
+			return percentage;
+		}
+
         unsigned int getLabel() const {
             return label;
         }
