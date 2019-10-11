@@ -13,7 +13,7 @@ void ofApp::setup(){
     setupGui();
     
     bNeedsUpdate = false;
-    bCalibrating = true;
+    bCalibrating = false;
     currentClipperType = ClipperLib::ctIntersection;
     
     maskFbo.allocate(1280, 720);
@@ -101,16 +101,20 @@ void ofApp::draw(){
 
     if (bCalibrating)
     {
-		//kinect.getBodyIndexSource()->draw(0, 0, 1280, 720);
+		kinect.getBodyIndexSource()->draw(0, 0, 1280, 720);
         ofSetColor(255, 0, 0);
-        //contourFinder.draw();
+        contourFinder.draw();
 		//test.draw();
-		drawClips();
+		//drawClips();
     }
     else
     {
         for (Recording &recording: recordings)
         {
+			//if (recording.wasRecorded())
+			//{
+			//	if (recording.getFrames().size() > 15) recording.replay();
+			//}
             if (recording.isRecording()) recording.displayCurrent();
             else if (recording.wasRecorded())
             {
@@ -124,7 +128,7 @@ void ofApp::draw(){
     gui.draw();
 //    drawSubjects();
 //    drawMasks();
-    //drawClips();
+//    drawClips();
 }
 
 void ofApp::mousePressed(int x, int y, int button){
@@ -153,7 +157,7 @@ void ofApp::setupGui(){
     gui.add(erodeIterations.set("Erode Iterations", 3, 0, 50));
     gui.add(dilateIterations.set("Dilate Iterations", 3, 0, 50));
     gui.add(invert.set("Invert", true));
-    gui.add(findHoles.set("Find Holes", true));
+    gui.add(findHoles.set("Find Holes", false));
     gui.add(contourMinArea.set("Contour Min Area", 25, 1, 100));
     gui.add(contourMaxArea.set("Contour Max Area", 200, 1, 1000));
     gui.add(persistence.set("Persistence", 96, 0, 500));
@@ -181,7 +185,7 @@ void ofApp::findContours(){
     contourFinder.setInvert(invert);
 
 	kinectImg.setFromPixels(kinect.getBodyIndexSource()->getPixels());
-	kinectImg.resize(1280, 720);
+	kinectImg.resize(ofGetWidth(), ofGetHeight());
 	contourFinder.findContours(kinectImg);
 }
 
@@ -210,7 +214,7 @@ void ofApp::drawSubjects(){
 void ofApp::drawMasks(){
     for (ofPolyline &mask: masks)
     {
-        ofSetColor(0, 255, 0, 10);
+        ofSetColor(164, 245, 151, 150);
         ofBeginShape();
         for (std::size_t i = 0; i < mask.size(); i++)
         {
@@ -254,7 +258,7 @@ void ofApp::assignPolyType(){
 			bloop = recording.getCurrentReplayFrame();
 			bloop.close();
 			subjects.push_back(bloop);
-			std::cout << subjects.size() << std::endl;
+			//std::cout << subjects.size() << std::endl;
 			/*std::shared_ptr<ofPolyline> poly = std::make_shared<ofPolyline>();
 			poly = recording.getCurrentReplayFrame();
 			subjects.push_back(poly);*/
